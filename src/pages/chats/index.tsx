@@ -1,6 +1,10 @@
-export default function Home() {
+import React from "react";
+
+const ChatsIndex = () => {
   return null;
-}
+};
+
+export default ChatsIndex;
 
 export const getServerSideProps = async () => {
   return {

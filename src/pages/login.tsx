@@ -3,20 +3,13 @@ import { useState } from "react";
 
 import { createClient } from "src/utils/supabase/component";
 import { createClient as serverClient } from "src/utils/supabase/server-props";
-import type {
-  InferGetServerSidePropsType,
-  GetServerSideProps,
-  PreviewData,
-  GetServerSidePropsContext,
-} from "next";
+import type { PreviewData, GetServerSidePropsContext } from "next";
 import { ParsedUrlQuery } from "querystring";
 import Input from "src/components/Input/Input";
 import Button from "src/components/Button";
 import { Chat } from "src/types/Chat.types";
 
-export default function LoginPage({
-  chat,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function LoginPage({ chat }: { chat: Chat[] }) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -33,7 +26,8 @@ export default function LoginPage({
     if (error) {
       console.error(error);
     }
-    router.push(`/chats/${chat.id}`);
+
+    router.push(`/chats/${chat[0].id}`);
   }
 
   async function signUp() {
@@ -54,7 +48,7 @@ export default function LoginPage({
     if (error) {
       console.error(error);
     }
-    router.push(`/chats/${chat.id}`);
+    router.push(`/chats/${chat[0].id}`);
   }
 
   return (
@@ -112,21 +106,20 @@ export default function LoginPage({
   );
 }
 
-export const getServerSideProps = (async (
+export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
   //@ts-expect-error - req and res are not defined in the context
   const supabase = serverClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
-  const { data: chat, error } = await supabase
-    .from("chats")
-    .select("*")
-    .single();
+  const { data: chat, error } = await supabase.from("chats").select("*");
 
-  if (userData.user) {
+  console.log(chat);
+
+  if (userData.user && chat) {
     return {
       redirect: {
-        destination: `/chats/${chat.id}`,
+        destination: `/chats/${chat[0].id}`,
         permanent: false,
       },
     };
@@ -141,4 +134,4 @@ export const getServerSideProps = (async (
       chat,
     },
   };
-}) satisfies GetServerSideProps<{ chat: Chat }>;
+};
