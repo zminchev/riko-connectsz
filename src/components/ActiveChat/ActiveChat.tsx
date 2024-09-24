@@ -6,6 +6,7 @@ import { Chat } from "src/types/Chat.types";
 import { determineUserName } from "src/utils/determineUserName";
 import { createClient } from "src/utils/supabase/component";
 import { Message } from "src/types/Message.types";
+import ChatItem from "./ChatItem";
 
 interface ActiveChatProps {
   chat: Chat;
@@ -17,6 +18,9 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messageInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+  const [lastSoundPlayed, setLastSoundPlayed] = useState<number>(0);
   const { firstName, lastName } = determineUserName({ chat, userId });
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,25 +94,47 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
     };
   }, [chat, supabase]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    const now = Date.now();
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      const isOtherUser = lastMessage.sender_id !== userId;
+
+      if (isOtherUser && now - lastSoundPlayed > 3000) {
+        // 3000ms = 3 seconds delay
+        notificationSoundRef.current?.play();
+        setLastSoundPlayed(now);
+      }
+    }
+  }, [messages, userId, lastSoundPlayed]);
+
   return (
-    <div className="p-2 bg-slate-600 ml-1 w-full flex flex-col gap-1">
+    <div className="p-2 bg-slate-600 ml-1 w-full flex flex-col gap-1 h-screen">
       <span className="text-lg bg-slate-500 p-2 rounded-sm">
         Chat with {firstName} {lastName}
       </span>
-      <div className="bg-slate-500 rounded-sm h-full">
+      <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
             const senderName = message.sender_id === userId ? "You" : firstName;
+            const isOtherUser = message.sender_id !== userId;
 
             return (
-              <div key={message.id} className="p-2 rounded-sm  my-1">
-                {`${senderName}:`} {message.content}
-              </div>
+              <ChatItem
+                content={message.content}
+                senderName={senderName}
+                isOtherUser={isOtherUser}
+              />
             );
           })
         ) : (
           <div className="p-2 rounded-sm  my-1">No messages yet</div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <form
         className="bg-slate-500 rounded-sm flex gap-1"
@@ -129,6 +155,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
           icon={<IoSend />}
         />
       </form>
+      <audio ref={notificationSoundRef} src="/sounds/notification.mp3" />
     </div>
   );
 };
