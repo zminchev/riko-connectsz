@@ -22,6 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         value={value}
         className={`text-black p-2 rounded-sm focus:outline-none ${className}`}
         placeholder={placeholder}
+        autoComplete="off"
         onChange={onChange}
       />
     );
