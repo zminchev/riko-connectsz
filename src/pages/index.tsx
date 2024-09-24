@@ -12,7 +12,7 @@ export default function Home() {
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
-  //@ts-expect-error
+  //@ts-expect-error - Supabase client is not initialized
   const supabase = createClient({ req: ctx.req, res: ctx.res });
 
   const { data } = await supabase.auth.getUser();

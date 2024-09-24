@@ -125,6 +125,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
 
             return (
               <ChatItem
+                key={message.id}
                 content={message.content}
                 senderName={senderName}
                 isOtherUser={isOtherUser}

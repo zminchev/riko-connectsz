@@ -34,7 +34,7 @@ export default ChatsPage;
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
-  //@ts-ignore
+  //@ts-expect-error - Supabase client is not initialized
   const supabase = createClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const currentUserId = userData?.user?.id;
