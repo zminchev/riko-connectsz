@@ -35,7 +35,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
 
     const { error: sendMessageError } = await supabase.from("messages").insert([
       {
-        chat_id: chat.id,
+        chat_id: chat?.id,
         sender_id: userId,
         content: message,
       },
@@ -54,7 +54,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
       const { data: messagesData, error: messagesError } = await supabase
         .from("messages")
         .select("*")
-        .eq("chat_id", chat.id)
+        .eq("chat_id", chat?.id)
         .order("created_at", { ascending: true });
 
       if (messagesError) {
@@ -66,9 +66,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
     };
 
     fetchMessages();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chat, supabase]);
 
   useEffect(() => {
     if (!supabase || !chat) return;
@@ -122,7 +120,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
-            const senderName = message.sender_id === userId ? "You" : firstName;
+            const senderName = message.sender_id === userId ? "You" : "test";
             const isOtherUser = message.sender_id !== userId;
 
             return (

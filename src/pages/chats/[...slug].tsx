@@ -10,21 +10,16 @@ import { createClient } from "src/utils/supabase/server-props";
 const ChatsPage = ({
   chatsData,
   currentUserId,
+  activeChat,
 }: {
   chatsData: Chat[];
   currentUserId: string;
+  activeChat: Chat;
 }) => {
-  const router = useRouter();
-  const chatSlug = router.query.slug;
-
-  const activeChatIndex = chatsData.findIndex((chat) => {
-    return chat.id === chatSlug?.toString();
-  });
-
   return (
     <div className="flex">
       <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
-      <ActiveChat chat={chatsData[activeChatIndex]} userId={currentUserId} />
+      <ActiveChat chat={activeChat} userId={currentUserId} />
     </div>
   );
 };
@@ -64,6 +59,13 @@ export const getServerSideProps = async (
       `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`
     );
 
+  const chatSlug = ctx.params?.slug;
+
+  // Find the active chat based on the chatSlug
+  const activeChat = chatsData?.find((chat) => {
+    return chat.id === chatSlug?.[0]?.toString();
+  });
+
   if (chatError) {
     console.error(chatError);
   }
@@ -71,6 +73,7 @@ export const getServerSideProps = async (
   return {
     props: {
       chatsData,
+      activeChat,
       currentUserId,
     },
   };
