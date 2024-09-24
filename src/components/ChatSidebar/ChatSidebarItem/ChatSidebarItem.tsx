@@ -4,14 +4,12 @@ import React from "react";
 interface ChatSidebarItemProps {
   firstName?: string;
   lastName?: string;
-  photo?: string | null;
   chatId: string;
 }
 
 const ChatSidebarItem = ({
   firstName = "",
   lastName = "",
-  photo = null,
   chatId,
 }: ChatSidebarItemProps) => {
   const joinedName = `${firstName} ${lastName}`;

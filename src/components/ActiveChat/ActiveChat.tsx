@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Input from "../Input";
 import { IoSend } from "react-icons/io5";
 import Button from "../Button";

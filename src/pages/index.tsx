@@ -1,5 +1,4 @@
 import {
-  GetServerSideProps,
   GetServerSidePropsContext,
   PreviewData,
 } from "next";
@@ -13,11 +12,11 @@ export default function Home() {
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
-  //@ts-ignore
+  //@ts-expect-error
   const supabase = createClient({ req: ctx.req, res: ctx.res });
 
   const { data } = await supabase.auth.getUser();
-  const { data: chat, error } = await supabase
+  const { data: chat } = await supabase
     .from("chats")
     .select("*")
     .single();
