@@ -1,14 +1,22 @@
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  PreviewData,
-} from "next";
+import { GetServerSidePropsContext, PreviewData } from "next";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
+import ChatSidebar from "src/components/ChatSidebar";
+import { Chat } from "src/types/Chat.types";
 import { createClient } from "src/utils/supabase/server-props";
 
-const ChatsPage = () => {
-  return <div>ChatsPage</div>;
+const ChatsPage = ({
+  chatsData,
+  currentUserId,
+}: {
+  chatsData: Chat[];
+  currentUserId: string;
+}) => {
+  return (
+    <div>
+      <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
+    </div>
+  );
 };
 
 export default ChatsPage;
@@ -19,6 +27,8 @@ export const getServerSideProps = async (
   //@ts-ignore
   const supabase = createClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
+  const currentUserId = userData?.user?.id;
+
   if (!userData.user) {
     return {
       redirect: {
@@ -28,18 +38,30 @@ export const getServerSideProps = async (
     };
   }
 
-  const { data: chat, error } = await supabase
+  const { data: chatsData, error: chatError } = await supabase
     .from("chats")
-    .select("*")
-    .single();
+    .select(
+      `
+    id,
+    participant_1_id,
+    participant_2_id,
+    created_at,
+    participant_1:participant_1_id(first_name, last_name),
+    participant_2:participant_2_id(first_name, last_name)
+  `
+    )
+    .or(
+      `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`
+    );
 
-  if (error) {
-    console.error(error);
+  if (chatError) {
+    console.error(chatError);
   }
 
   return {
     props: {
-      chat,
+      chatsData,
+      currentUserId,
     },
   };
 };

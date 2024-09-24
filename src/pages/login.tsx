@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { createClient } from "src/utils/supabase/component";
 import { createClient as serverClient } from "src/utils/supabase/server-props";
@@ -12,13 +12,7 @@ import type {
 import { ParsedUrlQuery } from "querystring";
 import Input from "src/components/Input/Input";
 import Button from "src/components/Button";
-
-type Chat = {
-  id: string;
-  participant_1_id: string;
-  participant_2_id: string;
-  created_at: string;
-};
+import { Chat } from "src/types/Chat.types";
 
 export default function LoginPage({
   chat,
