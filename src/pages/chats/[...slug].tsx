@@ -1,6 +1,8 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
+import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
+import ActiveChat from "src/components/ActiveChat";
 import ChatSidebar from "src/components/ChatSidebar";
 import { Chat } from "src/types/Chat.types";
 import { createClient } from "src/utils/supabase/server-props";
@@ -12,9 +14,17 @@ const ChatsPage = ({
   chatsData: Chat[];
   currentUserId: string;
 }) => {
+  const router = useRouter();
+  const chatSlug = router.query.slug;
+
+  const activeChatIndex = chatsData.findIndex((chat) => {
+    return chat.id === chatSlug?.toString();
+  });
+
   return (
-    <div>
+    <div className="flex">
       <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
+      <ActiveChat chat={chatsData[activeChatIndex]} userId={currentUserId} />
     </div>
   );
 };
