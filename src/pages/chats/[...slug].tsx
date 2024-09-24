@@ -1,5 +1,4 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
-import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
 import ActiveChat from "src/components/ActiveChat";
