@@ -1,9 +1,26 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { createClient } from "src/utils/supabase/component";
+import { createClient as serverClient } from "src/utils/supabase/server-props";
+import type {
+  InferGetServerSidePropsType,
+  GetServerSideProps,
+  PreviewData,
+  GetServerSidePropsContext,
+} from "next";
+import { ParsedUrlQuery } from "querystring";
 
-export default function LoginPage() {
+type Chat = {
+  id: string;
+  participant_1_id: string;
+  participant_2_id: string;
+  created_at: string;
+};
+
+export default function LoginPage({
+  chat,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -20,7 +37,7 @@ export default function LoginPage() {
     if (error) {
       console.error(error);
     }
-    router.push("/chats");
+    router.push(`/chats/${chat.id}`);
   }
 
   async function signUp() {
@@ -41,7 +58,7 @@ export default function LoginPage() {
     if (error) {
       console.error(error);
     }
-    router.push("/chats");
+    router.push(`/chats/${chat.id}`);
   }
 
   return (
@@ -52,6 +69,7 @@ export default function LoginPage() {
           id="email"
           type="email"
           value={email}
+          className="text-black"
           onChange={(e) => setEmail(e.target.value)}
         />
         <label htmlFor="password">Password:</label>
@@ -59,6 +77,7 @@ export default function LoginPage() {
           id="password"
           type="password"
           value={password}
+          className="text-black"
           onChange={(e) => setPassword(e.target.value)}
         />
         <label htmlFor="password">First Name:</label>
@@ -66,6 +85,7 @@ export default function LoginPage() {
           id="first-namee"
           type="text"
           value={firstName}
+          className="text-black"
           onChange={(e) => setFirstName(e.target.value)}
         />
         <label htmlFor="password">Last Name:</label>
@@ -73,6 +93,7 @@ export default function LoginPage() {
           id="last-name"
           type="text"
           value={lastName}
+          className="text-black"
           onChange={(e) => setLastName(e.target.value)}
         />
         <button type="button" onClick={logIn}>
@@ -85,3 +106,34 @@ export default function LoginPage() {
     </main>
   );
 }
+
+export const getServerSideProps = (async (
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
+  //@ts-ignore
+  const supabase = serverClient({ req: ctx.req, res: ctx.res });
+  const { data: userData } = await supabase.auth.getUser();
+  const { data: chat, error } = await supabase
+    .from("chats")
+    .select("*")
+    .single();
+
+  if (userData.user) {
+    return {
+      redirect: {
+        destination: `/chats/${chat.id}`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      chat,
+    },
+  };
+}) satisfies GetServerSideProps<{ chat: Chat }>;
