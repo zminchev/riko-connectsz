@@ -21,6 +21,8 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
   const [lastSoundPlayed, setLastSoundPlayed] = useState<number>(0);
+  const [canPlaySound, setCanPlaySound] = useState<boolean>(false); // To track user interaction
+  const [pendingSound, setPendingSound] = useState<boolean>(false); // To queue the sound
   const { firstName, lastName } = determineUserName({ chat, userId });
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,13 +106,49 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
       const lastMessage = messages[messages.length - 1];
       const isOtherUser = lastMessage.sender_id !== userId;
 
+      // Handle sound notification based on interaction
       if (isOtherUser && now - lastSoundPlayed > 3000) {
-        // 3000ms = 3 seconds delay
-        notificationSoundRef.current?.play();
-        setLastSoundPlayed(now);
+        if (canPlaySound) {
+          notificationSoundRef.current?.play().catch((error) => {
+            console.warn("Sound play prevented:", error);
+          });
+          setLastSoundPlayed(now);
+        } else {
+          // Queue the sound if user hasn't interacted yet
+          setPendingSound(true);
+        }
       }
     }
-  }, [messages, userId, lastSoundPlayed]);
+  }, [messages, userId, lastSoundPlayed, canPlaySound]);
+
+  // Play the queued sound when the user interacts
+  useEffect(() => {
+    if (canPlaySound && pendingSound) {
+      notificationSoundRef.current?.play().catch((error) => {
+        console.warn("Sound play prevented:", error);
+      });
+      setPendingSound(false); // Clear the pending sound after playing
+      setLastSoundPlayed(Date.now()); // Update the last sound played time
+    }
+  }, [canPlaySound, pendingSound]);
+
+  // Detect user interaction to enable sound playing
+  useEffect(() => {
+    const enableSoundOnInteraction = () => {
+      setCanPlaySound(true);
+      // Remove event listeners after first interaction
+      document.removeEventListener("click", enableSoundOnInteraction);
+      document.removeEventListener("keydown", enableSoundOnInteraction);
+    };
+
+    document.addEventListener("click", enableSoundOnInteraction);
+    document.addEventListener("keydown", enableSoundOnInteraction);
+
+    return () => {
+      document.removeEventListener("click", enableSoundOnInteraction);
+      document.removeEventListener("keydown", enableSoundOnInteraction);
+    };
+  }, []);
 
   return (
     <div className="p-2 bg-slate-600 ml-1 w-full flex flex-col gap-1 h-screen">
@@ -120,7 +158,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
-            const senderName = message.sender_id === userId ? "You" : "test";
+            const senderName = message.sender_id === userId ? "You" : firstName;
             const isOtherUser = message.sender_id !== userId;
 
             return (
