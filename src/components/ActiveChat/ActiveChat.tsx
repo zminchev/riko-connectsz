@@ -11,6 +11,7 @@ import useChatMessages from "src/hooks/useChatMessages";
 import usePushNotifications from "src/hooks/usePushNotifications";
 import useUserStatus from "src/hooks/useUserStatus";
 import OtherUserStatus from "../OtherUserStatus";
+import useTypingStatus from "src/hooks/useTypingStatus";
 
 interface ActiveChatProps {
   chat: Chat;
@@ -29,6 +30,8 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
     lastName
   );
   const messages = useChatMessages(chat.id, userId, sendPushNotification);
+  const { typingUsers } = useTypingStatus(chat.id, userId, messageInputRef);
+
   useUserStatus(userId);
 
   const otherUserId =
@@ -83,7 +86,7 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
           <OtherUserStatus otherUserId={otherUserId} />
         </span>
       </div>
-      <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
+      <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3 pb-4">
         {messages.length > 0 ? (
           messages.map((message) => {
             const senderName =
@@ -102,6 +105,13 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
         ) : (
           <div className="p-2 rounded-sm  my-1">No messages yet</div>
         )}
+        <div className="relative w-full h-[30px]">
+          {typingUsers.length > 0 ? (
+            <span className="absolute text-xs text-center w-full">
+              {firstName} is typing
+            </span>
+          ) : null}
+        </div>
         <div ref={messagesEndRef} />
       </div>
       <form

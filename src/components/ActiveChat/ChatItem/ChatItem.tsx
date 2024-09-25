@@ -18,7 +18,7 @@ const ChatItem = ({ content, senderName = "", isOtherUser }: ChatItemProps) => {
           isOtherUser ? "text-right right-1" : "text-left left-1"
         }`}
       >
-        {senderName}
+        {senderName || ""}
       </span>
       <div
         className={`px-2 py-1 max-w-xs relative text-message-text shadow-md text-left ${
@@ -27,7 +27,7 @@ const ChatItem = ({ content, senderName = "", isOtherUser }: ChatItemProps) => {
             : "bg-current-user rounded-t-md rounded-br-md"
         }`}
       >
-        <span className="text-sm">{content}</span>
+        <span className="text-sm break-words whitespace-normal">{content}</span>
       </div>
     </div>
   );
