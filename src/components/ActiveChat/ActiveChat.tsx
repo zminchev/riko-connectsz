@@ -15,6 +15,9 @@ interface ActiveChatProps {
   onSidebarToggle: () => void;
 }
 
+let lastNotificationTime = 0;
+const THROTTLE_INTERVAL = 5000;
+
 const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
   const supabase = createClient();
   const [message, setMessage] = useState("");
@@ -28,6 +31,51 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
   const [isTabVisible, setIsTabVisible] = useState<boolean>(true); // Track tab visibility
   const [prevMessageCount, setPrevMessageCount] = useState<number>(0); // Track previous message count
   const { firstName, lastName } = determineUserName({ chat, userId });
+
+  const sendPushNotification = async (message: Message) => {
+    const currentTime = Date.now();
+
+    if (currentTime - lastNotificationTime < THROTTLE_INTERVAL) {
+      return;
+    }
+
+    lastNotificationTime = currentTime;
+
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      const registration = await navigator.serviceWorker.ready;
+
+      const subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        console.log("No push subscription found.");
+        return;
+      }
+
+      // Prepare the payload with the message details
+      const payload = {
+        title: `New message from ${firstName} ${lastName}`, // The title of the notification
+        body: message.content, // The message content
+        tag: message.chat_id, // A unique identifier for the notification
+      };
+
+      // Send the notification to your backend API to trigger the push
+      await fetch("/api/send-notification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subscription, // Push subscription object
+          message: payload, // Message payload
+        }),
+      });
+
+      if (notificationSoundRef.current) {
+        notificationSoundRef.current.play().catch((error) => {
+          console.warn("Notification sound playback failed:", error);
+        });
+      }
+    }
+  };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -55,6 +103,59 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
     setMessage("");
     messageInputRef.current?.focus();
   };
+
+  const urlBase64ToUint8Array = (base64String: any) => {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+    const rawData = window.atob(base64);
+    return new Uint8Array([...rawData].map((char) => char.charCodeAt(0)));
+  };
+
+  const subscribeToPushNotifications = async () => {
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+
+        // Check if the user is already subscribed
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+          // If not subscribed, subscribe the user
+          const newSubscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY // Make sure this is set
+            ),
+          });
+
+          console.log("New subscription:", newSubscription);
+
+          // Send the new subscription to your backend for saving
+          await fetch("/api/save-subscription", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ subscription: newSubscription }),
+          });
+
+          console.log("Subscription saved to backend.");
+        } else {
+          console.log("Already subscribed:", subscription);
+        }
+      } catch (error) {
+        console.error("Error subscribing to push notifications:", error);
+      }
+    }
+  };
+
+  // Call the subscription function when the component mounts
+  useEffect(() => {
+    subscribeToPushNotifications();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -92,6 +193,11 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
           setMessages(
             (prevMessages) => [...prevMessages, payload.new] as Message[]
           );
+
+          const lastMessage = payload.new as Message;
+          if (lastMessage.sender_id !== userId) {
+            sendPushNotification(lastMessage);
+          }
         }
       )
       .subscribe();
