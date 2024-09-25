@@ -7,13 +7,15 @@ import { determineUserName } from "src/utils/determineUserName";
 import { createClient } from "src/utils/supabase/component";
 import { Message } from "src/types/Message.types";
 import ChatItem from "./ChatItem";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 interface ActiveChatProps {
   chat: Chat;
   userId: string;
+  onSidebarToggle: () => void;
 }
 
-const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
+const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
   const supabase = createClient();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -151,8 +153,9 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
   }, []);
 
   return (
-    <div className="p-2 bg-slate-600 ml-1 w-full flex flex-col gap-1 h-screen">
-      <span className="text-lg bg-slate-500 p-2 rounded-sm">
+    <div className="p-2 bg-slate-600 w-full flex flex-col gap-1 h-screen relative">
+      <Button className="absolute left-[10px] top-[15px]" icon={<MdKeyboardArrowRight className="w-8 h-8" />} onClick={onSidebarToggle}/>
+      <span className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left">
         Chat with {firstName} {lastName}
       </span>
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">

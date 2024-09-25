@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
 import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
-import React from "react";
+import React, { useState } from "react";
 import ActiveChat from "src/components/ActiveChat";
 import ChatSidebar from "src/components/ChatSidebar";
 import { Chat } from "src/types/Chat.types";
@@ -16,10 +16,15 @@ const ChatsPage = ({
   currentUserId: string;
   activeChat: Chat;
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const otherUser =
     activeChat.participant_1_id === currentUserId
       ? activeChat.participant_2
       : activeChat.participant_1;
+
+  const onSidebarToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
@@ -29,8 +34,17 @@ const ChatsPage = ({
         </title>
       </Head>
       <div className="flex">
-        <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
-        <ActiveChat chat={activeChat} userId={currentUserId} />
+        <ChatSidebar
+          chats={chatsData}
+          currentUserId={currentUserId}
+          isOpen={isOpen}
+          onSidebarToggle={onSidebarToggle}
+        />
+        <ActiveChat
+          chat={activeChat}
+          userId={currentUserId}
+          onSidebarToggle={onSidebarToggle}
+        />
       </div>
     </>
   );

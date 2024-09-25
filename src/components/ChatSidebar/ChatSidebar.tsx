@@ -3,12 +3,21 @@ import { Chat } from "src/types/Chat.types";
 import ChatSidebarItem from "./ChatSidebarItem";
 import { determineUserName } from "src/utils/determineUserName";
 import { createClient } from "src/utils/supabase/component";
+import { IoClose } from "react-icons/io5";
+import Button from "../Button";
 interface ChatSidebarProps {
   chats: Chat[];
   currentUserId: string;
+  isOpen: boolean;
+  onSidebarToggle: () => void;
 }
 
-const ChatSidebar = ({ chats, currentUserId }: ChatSidebarProps) => {
+const ChatSidebar = ({
+  chats,
+  currentUserId,
+  isOpen,
+  onSidebarToggle,
+}: ChatSidebarProps) => {
   const [allChats, setAllChats] = useState<Chat[]>(chats);
   const supabase = createClient();
 
@@ -78,7 +87,15 @@ const ChatSidebar = ({ chats, currentUserId }: ChatSidebarProps) => {
   }, [chats, supabase]);
 
   return (
-    <div className="flex flex-col gap-2 p-2 max-w-[250px] min-w-[250px] bg-slate-600 h-screen overflow-auto rounded-sm">
+    <div
+      className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out
+      ${
+        isOpen ? "translate-x-0" : "-translate-x-full pr-1"
+      } md:translate-x-0 md:static md:w-64 bg-slate-600 z-40 h-screen`}
+    >
+      <div className="p-2 flex justify-end">
+        <Button icon={<IoClose className="w-8 h-8"/>} onClick={onSidebarToggle} />
+      </div>
       {filteredChats.length > 0 ? (
         filteredChats.map((chat) => {
           const { firstName, lastName } = determineUserName({
