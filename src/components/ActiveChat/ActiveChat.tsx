@@ -191,11 +191,11 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
         icon={<MdKeyboardArrowRight className="w-8 h-8" />}
         onClick={onSidebarToggle}
       />
-      <div className="flex items-center">
-        <span className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left relative">
-          Chat with {firstName} {lastName}
-        </span>
-      </div>
+
+      <span className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left">
+        Chat with {firstName} {lastName}
+      </span>
+
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
