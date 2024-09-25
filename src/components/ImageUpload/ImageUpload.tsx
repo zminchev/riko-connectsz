@@ -2,12 +2,14 @@
 import { useState, useRef } from "react";
 import { createClient } from "src/utils/supabase/component";
 import { IoAddCircle } from "react-icons/io5";
+import { FaCamera } from "react-icons/fa";
 import Button from "../Button";
 
 const ImageUpload = ({ onUpload }: { onUpload: any }) => {
   const supabase = createClient();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<any>(null);
+  const cameraInputRef = useRef<any>(null);
 
   const uploadImage = async (event: any) => {
     try {
@@ -51,6 +53,12 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
     }
   };
 
+  const handleCameraClick = () => {
+    if (cameraInputRef.current) {
+      cameraInputRef.current.click();
+    }
+  };
+
   return (
     <div className="flex p-3">
       <input
@@ -58,15 +66,31 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         ref={fileInputRef}
         style={{ display: "none" }}
         accept="image/*"
+        onChange={uploadImage}
+        disabled={uploading}
+      />
+      <input
+        type="file"
+        ref={cameraInputRef}
+        style={{ display: "none" }}
+        accept="image/*"
         capture="environment"
         onChange={uploadImage}
         disabled={uploading}
       />
-      <Button
-        onClick={handleButtonClick}
-        disabled={uploading}
-        icon={<IoAddCircle className="w-10 h-10"/>}
-      />
+      <div className="flex gap-4">
+        <Button
+          onClick={handleButtonClick}
+          disabled={uploading}
+          icon={<IoAddCircle className="w-10 h-10" />}
+        />
+        <Button
+          onClick={handleCameraClick}
+          disabled={uploading}
+          className="mr-4"
+          icon={<FaCamera className="w-8 h-8" />}
+        />
+      </div>
     </div>
   );
 };
