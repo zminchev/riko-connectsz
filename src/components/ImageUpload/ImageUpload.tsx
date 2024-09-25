@@ -58,6 +58,7 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         ref={fileInputRef}
         style={{ display: "none" }}
         accept="image/*"
+        capture="environment"
         onChange={uploadImage}
         disabled={uploading}
       />

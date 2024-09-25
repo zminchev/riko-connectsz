@@ -15,8 +15,19 @@ const ChatItem = ({
   imageUrl = "",
 }: ChatItemProps) => {
   return imageUrl ? (
-    <div className="max-w-80">
-      <Image src={imageUrl} width={200} height={200} alt="Uploaded Imagе" />
+    <div
+      className={`flex w-full relative ${
+        isOtherUser ? "justify-end" : "justify-start"
+      } mb-3`}
+    >
+      <span
+        className={`absolute -top-4 text-xs ${
+          isOtherUser ? "text-right right-1" : "text-left left-1"
+        }`}
+      >
+        {senderName || ""}
+      </span>
+      <Image src={imageUrl} width={200} height={200} alt="Uploaded Image" />
     </div>
   ) : (
     <div
