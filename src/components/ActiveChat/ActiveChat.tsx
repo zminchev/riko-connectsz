@@ -12,6 +12,7 @@ import usePushNotifications from "src/hooks/usePushNotifications";
 import useUserStatus from "src/hooks/useUserStatus";
 import OtherUserStatus from "../OtherUserStatus";
 import useTypingStatus from "src/hooks/useTypingStatus";
+import ImageUpload from "../ImageUpload";
 
 interface ActiveChatProps {
   chat: Chat;
@@ -43,20 +44,40 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
     setMessage(e.target.value);
   };
 
-  const handleSendMessage = async (event: React.FormEvent) => {
+  const handleSendMessage = async (
+    event: React.FormEvent,
+    imageUrl?: string
+  ) => {
     event.preventDefault();
+
+    if (imageUrl) {
+      await supabase.from("messages").insert([
+        {
+          chat_id: chat?.id,
+          sender_id: userId,
+          content: "",
+          image_url: imageUrl || "",
+        },
+      ]);
+    }
+
     if (!message || !message.trim()) {
       setMessage("");
       return;
     }
 
-    const { error: sendMessageError } = await supabase.from("messages").insert([
-      {
-        chat_id: chat?.id,
-        sender_id: userId,
-        content: message,
-      },
-    ]);
+    const { data, error: sendMessageError } = await supabase
+      .from("messages")
+      .insert([
+        {
+          chat_id: chat?.id,
+          sender_id: userId,
+          content: message,
+          image_url: imageUrl || "",
+        },
+      ]);
+
+    console.log(data, "data ");
 
     if (sendMessageError) {
       console.error(sendMessageError);
@@ -99,6 +120,7 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
                 content={message.content}
                 senderName={senderName}
                 isOtherUser={isOtherUser}
+                imageUrl={message.image_url}
               />
             );
           })
@@ -114,25 +136,30 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
         </div>
         <div ref={messagesEndRef} />
       </div>
-      <form
-        className="bg-slate-500 rounded-sm flex gap-1"
-        onSubmit={(e) => handleSendMessage(e)}
-      >
-        <Input
-          ref={messageInputRef}
-          id="messsage"
-          type="text"
-          className="w-full"
-          placeholder="Type a message..."
-          value={message}
-          onChange={handleOnChange}
+      <div className="flex w-full justify-center items-center">
+        <ImageUpload
+          onUpload={(event: any, url: string) => handleSendMessage(event, url)}
         />
-        <Button
-          type="submit"
-          className="p-3 rounded-sm ml-1"
-          icon={<IoSend />}
-        />
-      </form>
+        <form
+          className="bg-slate-500 rounded-sm flex gap-1 w-full"
+          onSubmit={(e) => handleSendMessage(e)}
+        >
+          <Input
+            ref={messageInputRef}
+            id="messsage"
+            type="text"
+            className="w-full"
+            placeholder="Type a message..."
+            value={message}
+            onChange={handleOnChange}
+          />
+          <Button
+            type="submit"
+            className="p-3 rounded-sm ml-1"
+            icon={<IoSend />}
+          />
+        </form>
+      </div>
       <audio ref={notificationSoundRef} src="/sounds/notification.mp3" />
     </div>
   );

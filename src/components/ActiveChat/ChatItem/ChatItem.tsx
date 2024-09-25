@@ -1,20 +1,31 @@
+import Image from "next/image";
 import React from "react";
 
 interface ChatItemProps {
   content: string;
   senderName?: string;
   isOtherUser: boolean;
+  imageUrl?: string;
 }
 
-const ChatItem = ({ content, senderName = "", isOtherUser }: ChatItemProps) => {
-  return (
+const ChatItem = ({
+  content,
+  senderName = "",
+  isOtherUser,
+  imageUrl = "",
+}: ChatItemProps) => {
+  return imageUrl ? (
+    <div className="max-w-80">
+      <Image src={imageUrl} width={200} height={200} alt="Uploaded Imagе" />
+    </div>
+  ) : (
     <div
       className={`flex w-full relative ${
         isOtherUser ? "justify-end" : "justify-start"
       } mb-4`}
     >
       <span
-        className={`absolute -top-6 text-xs ${
+        className={`absolute -top-4 text-xs ${
           isOtherUser ? "text-right right-1" : "text-left left-1"
         }`}
       >
