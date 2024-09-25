@@ -12,6 +12,35 @@ const ChatSidebar = ({ chats, currentUserId }: ChatSidebarProps) => {
   const [allChats, setAllChats] = useState<Chat[]>(chats);
   const supabase = createClient();
 
+  const filteredChats = allChats.filter(
+    (chat) =>
+      chat.participant_1_id === currentUserId ||
+      chat.participant_2_id === currentUserId
+  );
+
+  const fetchParticipantDetails = async (chat: Chat) => {
+    const { data: enrichedChat, error } = await supabase
+      .from("chats")
+      .select(
+        `
+        id,
+        participant_1_id,
+        participant_2_id,
+        created_at,
+        participant_1:participant_1_id ( first_name, last_name ),
+        participant_2:participant_2_id ( first_name, last_name )
+        `
+      )
+      .eq("id", chat.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching chat with participant details:", error);
+    }
+
+    return enrichedChat;
+  };
+
   useEffect(() => {
     if (!supabase || !allChats) return;
 
@@ -22,27 +51,42 @@ const ChatSidebar = ({ chats, currentUserId }: ChatSidebarProps) => {
         {
           event: "INSERT",
           schema: "public",
-          table: "messages",
+          table: "chats",
         },
-        (payload) => {
-          setAllChats((prevChats) => [...prevChats, payload.new] as Chat[]);
+        async (payload) => {
+          const newChat = payload.new as Chat;
+
+          if (
+            newChat.participant_1_id === currentUserId ||
+            newChat.participant_2_id === currentUserId
+          ) {
+            const enrichedChat = await fetchParticipantDetails(newChat);
+
+            if (!allChats.some((chat) => chat.id === enrichedChat?.id)) {
+              setAllChats(
+                (prevChats) => [...prevChats, enrichedChat] as Chat[]
+              );
+            }
+          }
         }
       )
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chats, supabase]);
 
   return (
     <div className="flex flex-col gap-2 p-2 max-w-[250px] min-w-[250px] bg-slate-600 h-screen overflow-auto rounded-sm">
-      {chats.length > 0 ? (
-        chats.map((chat) => {
+      {filteredChats.length > 0 ? (
+        filteredChats.map((chat) => {
           const { firstName, lastName } = determineUserName({
             chat,
             userId: currentUserId,
           });
+
+          // console.log(firstName, lastName);
 
           return (
             <ChatSidebarItem

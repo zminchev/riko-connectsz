@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
+import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
 import ActiveChat from "src/components/ActiveChat";
@@ -15,11 +16,23 @@ const ChatsPage = ({
   currentUserId: string;
   activeChat: Chat;
 }) => {
+  const otherUser =
+    activeChat.participant_1_id === currentUserId
+      ? activeChat.participant_2
+      : activeChat.participant_1;
+
   return (
-    <div className="flex">
-      <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
-      <ActiveChat chat={activeChat} userId={currentUserId} />
-    </div>
+    <>
+      <Head>
+        <title>
+          Chats | {otherUser?.first_name} {otherUser?.last_name}
+        </title>
+      </Head>
+      <div className="flex">
+        <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
+        <ActiveChat chat={activeChat} userId={currentUserId} />
+      </div>
+    </>
   );
 };
 

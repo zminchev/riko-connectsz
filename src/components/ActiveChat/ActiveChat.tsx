@@ -158,7 +158,7 @@ const ActiveChat = ({ chat, userId }: ActiveChatProps) => {
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
-            const senderName = message.sender_id === userId ? "You" : firstName;
+            const senderName = message.sender_id === userId ? "You" : `${firstName} ${lastName}`;
             const isOtherUser = message.sender_id !== userId;
 
             return (
