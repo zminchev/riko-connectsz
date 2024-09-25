@@ -19,10 +19,19 @@ export default function LoginPage() {
   const [lastName, setLastName] = useState("");
 
   async function logIn() {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    await supabase
+      .from("users")
+      .update({
+        is_online: true,
+      })
+      .eq("id", data?.user?.id);
+
+    console.log(data);
 
     if (error) {
       console.error(error);
@@ -119,8 +128,6 @@ export const getServerSideProps = async (
   const supabase = serverClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const { data: chat, error } = await supabase.from("chats").select("*");
-
-  console.log(chat);
 
   if (userData.user && chat) {
     return {

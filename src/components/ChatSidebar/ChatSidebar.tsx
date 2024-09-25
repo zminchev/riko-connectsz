@@ -23,7 +23,17 @@ const ChatSidebar = ({
   const supabase = createClient();
   const router = useRouter();
 
+  console.log(currentUserId);
+  
+
   const handleLogout = async () => {
+    await supabase
+      .from("users")
+      .update({
+        is_online: false,
+      })
+      .eq("id", currentUserId);
+
     await supabase.auth.signOut();
   };
 
