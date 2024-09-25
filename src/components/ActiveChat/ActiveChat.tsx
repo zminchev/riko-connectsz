@@ -25,6 +25,8 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
   const [lastSoundPlayed, setLastSoundPlayed] = useState<number>(0);
   const [canPlaySound, setCanPlaySound] = useState<boolean>(false); // To track user interaction
   const [pendingSound, setPendingSound] = useState<boolean>(false); // To queue the sound
+  const [isTabVisible, setIsTabVisible] = useState<boolean>(true); // Track tab visibility
+  const [prevMessageCount, setPrevMessageCount] = useState<number>(0); // Track previous message count
   const { firstName, lastName } = determineUserName({ chat, userId });
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +36,7 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!message || message.trim() === "") {
+      setMessage("");
       return;
     }
 
@@ -98,6 +101,7 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
     };
   }, [chat, supabase]);
 
+  // Scroll to the bottom of the chat on new messages
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -108,8 +112,13 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
       const lastMessage = messages[messages.length - 1];
       const isOtherUser = lastMessage.sender_id !== userId;
 
-      // Handle sound notification based on interaction
-      if (isOtherUser && now - lastSoundPlayed > 3000) {
+      // Only play sound when a new message is received
+      if (
+        isOtherUser &&
+        messages.length > prevMessageCount && // Check if a new message was received
+        now - lastSoundPlayed > 3000 &&
+        isTabVisible
+      ) {
         if (canPlaySound) {
           notificationSoundRef.current?.play().catch((error) => {
             console.warn("Sound play prevented:", error);
@@ -120,8 +129,11 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
           setPendingSound(true);
         }
       }
+
+      // Update previous message count
+      setPrevMessageCount(messages.length);
     }
-  }, [messages, userId, lastSoundPlayed, canPlaySound]);
+  }, [messages, userId, lastSoundPlayed, canPlaySound, isTabVisible, prevMessageCount]);
 
   // Play the queued sound when the user interacts
   useEffect(() => {
@@ -149,6 +161,19 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
     return () => {
       document.removeEventListener("click", enableSoundOnInteraction);
       document.removeEventListener("keydown", enableSoundOnInteraction);
+    };
+  }, []);
+
+  // Handle page visibility change to prevent sound on refocus
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsTabVisible(!document.hidden);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
