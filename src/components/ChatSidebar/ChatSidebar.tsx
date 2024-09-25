@@ -5,6 +5,7 @@ import { determineUserName } from "src/utils/determineUserName";
 import { createClient } from "src/utils/supabase/component";
 import { IoClose } from "react-icons/io5";
 import Button from "../Button";
+import { useRouter } from "next/router";
 interface ChatSidebarProps {
   chats: Chat[];
   currentUserId: string;
@@ -20,6 +21,11 @@ const ChatSidebar = ({
 }: ChatSidebarProps) => {
   const [allChats, setAllChats] = useState<Chat[]>(chats);
   const supabase = createClient();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const filteredChats = allChats.filter(
     (chat) =>
@@ -49,6 +55,18 @@ const ChatSidebar = ({
 
     return enrichedChat;
   };
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        router.push("/login");
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (!supabase || !allChats) return;
@@ -88,7 +106,7 @@ const ChatSidebar = ({
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out
+      className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out flex flex-col
       ${
         isOpen ? "translate-x-0" : "-translate-x-full pr-1"
       } md:translate-x-0 md:static md:w-64 bg-slate-600 z-40 h-screen`}
@@ -99,7 +117,7 @@ const ChatSidebar = ({
           onClick={onSidebarToggle}
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-auto p-2">
         {filteredChats.length > 0 ? (
           filteredChats.map((chat) => {
             const { firstName, lastName } = determineUserName({
@@ -119,6 +137,13 @@ const ChatSidebar = ({
         ) : (
           <div className="p-2 rounded-sm">No chats yet</div>
         )}
+      </div>
+      <div className="w-full p-2 mt-auto">
+        <Button
+          text="Log out"
+          className="p-2 bg-error-primary rounded-sm w-full"
+          onClick={handleLogout}
+        />
       </div>
     </div>
   );
