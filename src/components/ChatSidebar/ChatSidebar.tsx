@@ -93,8 +93,11 @@ const ChatSidebar = ({
         isOpen ? "translate-x-0" : "-translate-x-full pr-1"
       } md:translate-x-0 md:static md:w-64 bg-slate-600 z-40 h-screen`}
     >
-      <div className="p-2 flex justify-end">
-        <Button icon={<IoClose className="w-8 h-8"/>} onClick={onSidebarToggle} />
+      <div className="p-2 flex justify-end md:hidden">
+        <Button
+          icon={<IoClose className="w-8 h-8" />}
+          onClick={onSidebarToggle}
+        />
       </div>
       {filteredChats.length > 0 ? (
         filteredChats.map((chat) => {
@@ -102,8 +105,6 @@ const ChatSidebar = ({
             chat,
             userId: currentUserId,
           });
-
-          // console.log(firstName, lastName);
 
           return (
             <ChatSidebarItem
