@@ -133,7 +133,14 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
       // Update previous message count
       setPrevMessageCount(messages.length);
     }
-  }, [messages, userId, lastSoundPlayed, canPlaySound, isTabVisible, prevMessageCount]);
+  }, [
+    messages,
+    userId,
+    lastSoundPlayed,
+    canPlaySound,
+    isTabVisible,
+    prevMessageCount,
+  ]);
 
   // Play the queued sound when the user interacts
   useEffect(() => {
@@ -179,14 +186,21 @@ const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
 
   return (
     <div className="p-2 bg-slate-600 w-full flex flex-col gap-1 h-screen relative">
-      <Button className="absolute left-[10px] top-[15px] md:hidden" icon={<MdKeyboardArrowRight className="w-8 h-8" />} onClick={onSidebarToggle}/>
-      <span className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left">
-        Chat with {firstName} {lastName}
-      </span>
+      <Button
+        className="absolute left-[10px] top-[15px] md:hidden"
+        icon={<MdKeyboardArrowRight className="w-8 h-8" />}
+        onClick={onSidebarToggle}
+      />
+      <div className="flex items-center">
+        <span className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left relative">
+          Chat with {firstName} {lastName}
+        </span>
+      </div>
       <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3">
         {messages.length > 0 ? (
           messages.map((message) => {
-            const senderName = message.sender_id === userId ? "You" : `${firstName} ${lastName}`;
+            const senderName =
+              message.sender_id === userId ? "You" : `${firstName} ${lastName}`;
             const isOtherUser = message.sender_id !== userId;
 
             return (

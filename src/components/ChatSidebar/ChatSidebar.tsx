@@ -99,25 +99,27 @@ const ChatSidebar = ({
           onClick={onSidebarToggle}
         />
       </div>
-      {filteredChats.length > 0 ? (
-        filteredChats.map((chat) => {
-          const { firstName, lastName } = determineUserName({
-            chat,
-            userId: currentUserId,
-          });
+      <div className="flex flex-col gap-2">
+        {filteredChats.length > 0 ? (
+          filteredChats.map((chat) => {
+            const { firstName, lastName } = determineUserName({
+              chat,
+              userId: currentUserId,
+            });
 
-          return (
-            <ChatSidebarItem
-              key={chat.id}
-              chatId={chat.id}
-              firstName={firstName}
-              lastName={lastName}
-            />
-          );
-        })
-      ) : (
-        <div className="p-2 rounded-sm">No chats yet</div>
-      )}
+            return (
+              <ChatSidebarItem
+                key={chat.id}
+                chatId={chat.id}
+                firstName={firstName}
+                lastName={lastName}
+              />
+            );
+          })
+        ) : (
+          <div className="p-2 rounded-sm">No chats yet</div>
+        )}
+      </div>
     </div>
   );
 };

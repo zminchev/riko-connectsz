@@ -23,6 +23,7 @@ export default function LoginPage() {
       email,
       password,
     });
+
     if (error) {
       console.error(error);
     }
@@ -95,13 +96,13 @@ export default function LoginPage() {
             <Button
               type="button"
               text="Log in"
-              className="font-bold p-2 bg-blue-600 hover:bg-blue-500 w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
+              className="font-bold p-2 bg-button-primary hover:bg-button-secondary hover:text-text-primary w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
               onClick={logIn}
             />
             <Button
               type="button"
               text="Sign up"
-              className="font-bold p-2 bg-blue-600 hover:bg-blue-500 w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
+              className="font-bold p-2 bg-button-primary hover:bg-button-secondary hover:text-text-primary w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
               onClick={signUp}
             />
           </div>

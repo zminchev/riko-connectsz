@@ -21,8 +21,10 @@ const ChatItem = ({ content, senderName = "", isOtherUser }: ChatItemProps) => {
         {senderName}
       </span>
       <div
-        className={`p-2 rounded-md  max-w-xs relative ${
-          isOtherUser ? "bg-blue-700 text-right" : "bg-green-700 text-left"
+        className={`px-2 py-1 max-w-xs relative text-message-text shadow-md text-left ${
+          isOtherUser
+            ? "bg-other-user rounded-t-md rounded-bl-md"
+            : "bg-current-user rounded-t-md rounded-br-md"
         }`}
       >
         <span className="text-sm">{content}</span>

@@ -7,15 +7,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-white;
+  @apply bg-dark-primary;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-950;
+  @apply bg-accent-secondary;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-800;
+  @apply bg-dark-primary;
 }
 
 :root {

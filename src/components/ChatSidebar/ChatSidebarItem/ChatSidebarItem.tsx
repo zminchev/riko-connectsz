@@ -15,7 +15,7 @@ const ChatSidebarItem = ({
   const joinedName = `${firstName} ${lastName}`;
   return (
     <Link href={`/chats/${chatId}`}>
-      <div className="bg-red-600 hover:bg-red-700 hover:shadow-md shadow-sm transition-colors duraion-300 ease-in-out w-full text-center p-4 rounded-sm">
+      <div className="bg-dark-primary hover:bg-accent-secondary hover:text-text-primary hover:shadow-md shadow-sm transition-colors duraion-300 ease-in-out w-full text-center p-4 rounded-sm font-bold">
         {joinedName}
       </div>
     </Link>
