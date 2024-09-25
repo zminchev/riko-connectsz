@@ -8,8 +8,8 @@ import Button from "../Button";
 interface ChatSidebarProps {
   chats: Chat[];
   currentUserId: string;
-  isOpen: boolean;
-  onSidebarToggle: () => void;
+  isOpen?: boolean;
+  onSidebarToggle?: () => void;
 }
 
 const ChatSidebar = ({
