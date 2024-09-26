@@ -63,11 +63,13 @@ const ActiveChat = ({
     imageUrl?: string
   ) => {
     event.preventDefault();
+    console.log("imageUrl", imageUrl);
 
     if (imageUrl) {
       await supabase.from("messages").insert([
         {
           chat_id: chat?.id,
+          room_id: room?.id,
           sender_id: userId,
           content: "",
           image_url: imageUrl || "",
@@ -80,17 +82,15 @@ const ActiveChat = ({
       return;
     }
 
-    const { error: sendMessageError } = await supabase
-      .from("messages")
-      .insert([
-        {
-          chat_id: chat?.id,
-          room_id: room?.id,
-          sender_id: userId,
-          content: message,
-          image_url: imageUrl || "",
-        },
-      ])
+    const { error: sendMessageError } = await supabase.from("messages").insert([
+      {
+        chat_id: chat?.id,
+        room_id: room?.id,
+        sender_id: userId,
+        content: message,
+        image_url: imageUrl || "",
+      },
+    ]);
 
     if (sendMessageError) {
       console.error(sendMessageError);

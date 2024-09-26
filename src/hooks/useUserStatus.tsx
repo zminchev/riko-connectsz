@@ -1,29 +1,28 @@
 import { useEffect } from "react";
 import { createClient } from "src/utils/supabase/component";
+import { throttle } from "lodash";
 
 const useUserStatus = (currentUserId: string) => {
   const supabase = createClient();
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     const updateUserStatus = async (status: boolean) => {
       const date = new Date();
       const formattedDate = new Date(date).toLocaleString();
+
       await supabase
         .from("users")
         .update({ last_active: formattedDate, is_online: status })
         .eq("id", currentUserId);
     };
 
-    const handleUserActivity = () => {
-      updateUserStatus(true); // Set the user to online
-    };
-
-    let timeoutId: NodeJS.Timeout;
+    const throttledUpdateStatusOnline = throttle(() => {
+      updateUserStatus(true);
+    }, 10000);
 
     const markAsInactive = async () => {
-      await supabase
-        .from("users")
-        .update({ is_online: false })
-        .eq("id", currentUserId);
+      updateUserStatus(false);
     };
 
     const resetInactivityTimeout = () => {
@@ -31,16 +30,20 @@ const useUserStatus = (currentUserId: string) => {
       timeoutId = setTimeout(markAsInactive, 5 * 60 * 1000); // 5 minutes inactivity
     };
 
+    const handleUserActivity = () => {
+      throttledUpdateStatusOnline();
+      resetInactivityTimeout();
+    };
+
     document.addEventListener("mousemove", handleUserActivity);
     document.addEventListener("keydown", handleUserActivity);
-    document.addEventListener("mousemove", resetInactivityTimeout);
-    document.addEventListener("keydown", resetInactivityTimeout);
+
+    handleUserActivity();
 
     return () => {
       document.removeEventListener("mousemove", handleUserActivity);
       document.removeEventListener("keydown", handleUserActivity);
-      document.removeEventListener("mousemove", resetInactivityTimeout);
-      document.removeEventListener("keydown", resetInactivityTimeout);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [currentUserId]);
 };
