@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "src/utils/supabase/component";
 
 const useTypingStatus = (
-  chatId: string,
+  chatId: string | undefined,
   userId: string,
   inputRef: React.RefObject<HTMLInputElement>
 ) => {
