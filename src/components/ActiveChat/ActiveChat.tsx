@@ -63,7 +63,6 @@ const ActiveChat = ({
     imageUrl?: string
   ) => {
     event.preventDefault();
-    console.log("imageUrl", imageUrl);
 
     if (imageUrl) {
       await supabase.from("messages").insert([
