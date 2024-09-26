@@ -4,7 +4,7 @@ import { Message } from "src/types/Message.types";
 let lastNotificationTime = 0;
 const THROTTLE_INTERVAL = 5000;
 
-const usePushNotifications = (firstName?: string, lastName?: string) => {
+const usePushNotifications = (firstName?: string, lastName?: string, groupName?: string) => {
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
   const [canPlaySound, setCanPlaySound] = useState<boolean>(false);
   const [pendingSound, setPendingSound] = useState<boolean>(false);
@@ -69,8 +69,10 @@ const usePushNotifications = (firstName?: string, lastName?: string) => {
       }
 
       // Prepare the payload with the message details
+
+      const messageFrom = firstName && lastName ? `You have a new message from ${firstName} ${lastName}` : `New message in ${groupName}`;
       const payload = {
-        title: `New message from ${firstName} ${lastName}`,
+        title: messageFrom,
         body: message.content,
         tag: message.chat_id,
       };

@@ -2,7 +2,7 @@ import { Chat } from "src/types/Chat.types";
 import { Room } from "src/types/Room.types";
 
 interface DetermineUserNameProps {
-  chat?: Chat;
+  chat?: Chat | null;
   room?: Room;
   userId: string;
 }

@@ -14,9 +14,10 @@ import OtherUserStatus from "../OtherUserStatus";
 import useTypingStatus from "src/hooks/useTypingStatus";
 import ImageUpload from "../ImageUpload";
 import { Room } from "src/types/Room.types";
+import { getCurrentSenderName } from "src/utils/getCurrentSenderName";
 
 interface ActiveChatProps {
-  chat?: Chat;
+  chat?: Chat | null;
   room?: Room;
   userId: string;
   onSidebarToggle: () => void;
@@ -34,7 +35,8 @@ const ActiveChat = ({
   const { firstName, lastName } = determineUserName({ chat, userId });
   const { sendPushNotification, notificationSoundRef } = usePushNotifications(
     firstName,
-    lastName
+    lastName,
+    room?.name
   );
   const messages = useChatMessages(
     chat?.id,
@@ -90,8 +92,6 @@ const ActiveChat = ({
       ])
       .select("*");
 
-    console.log(data, "data ");
-
     if (sendMessageError) {
       console.error(sendMessageError);
     }
@@ -128,20 +128,6 @@ const ActiveChat = ({
     }
   );
 
-  const getCurrentSenderName = (messageSenderId: string) => {
-    const groupParticipantName = filteredRoomParticipants?.find(
-      (roomParticipant) => {
-        return roomParticipant.user_id === messageSenderId;
-      }
-    );
-
-    const firstName = groupParticipantName?.users.first_name;
-    const lastName = groupParticipantName?.users.last_name;
-
-    const joinedNames = `${firstName} ${lastName}`;
-    return joinedNames;
-  };
-
   return (
     <div className="p-2 bg-slate-600 w-full flex flex-col gap-1 h-screen relative">
       <Button
@@ -165,7 +151,13 @@ const ActiveChat = ({
             let nameOfUser = "";
 
             if (room) {
-              nameOfUser = message.sender_id === userId ? "You" : getCurrentSenderName(message.sender_id);
+              nameOfUser =
+                message.sender_id === userId
+                  ? "You"
+                  : getCurrentSenderName(
+                      message.sender_id,
+                      filteredRoomParticipants
+                    );
             }
 
             if (chat) {
@@ -184,7 +176,7 @@ const ActiveChat = ({
         ) : (
           <div className="p-2 rounded-sm  my-1">No messages yet</div>
         )}
-        <div className="relative w-full h-[30px]">
+        <div className="relative w-full h-[10px] mt-auto">
           {typingUsers.length > 0 ? (
             <span className="absolute text-xs text-center w-full">
               {firstName} is typing

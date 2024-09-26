@@ -14,13 +14,13 @@ const ChatsPage = ({
 }: {
   chatsData: Chat[];
   currentUserId: string;
-  activeChat: Chat;
+  activeChat: Chat | null;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const otherUser =
-    activeChat.participant_1_id === currentUserId
+    activeChat?.participant_1_id === currentUserId
       ? activeChat.participant_2
-      : activeChat.participant_1;
+      : activeChat?.participant_1;
 
   const onSidebarToggle = () => {
     setIsOpen(!isOpen);
@@ -40,11 +40,15 @@ const ChatsPage = ({
           isOpen={isOpen}
           onSidebarToggle={onSidebarToggle}
         />
-        <ActiveChat
-          chat={activeChat}
-          userId={currentUserId}
-          onSidebarToggle={onSidebarToggle}
-        />
+        {activeChat ? (
+          <ActiveChat
+            chat={activeChat}
+            userId={currentUserId}
+            onSidebarToggle={onSidebarToggle}
+          />
+        ) : (
+          <div>Choose a chat to start messaging</div>
+        )}
       </div>
     </>
   );

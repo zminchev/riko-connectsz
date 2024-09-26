@@ -24,6 +24,11 @@ const GroupCreationContainer = ({
       return;
     }
 
+    if (!groupName || groupName.trim() === "") {
+      alert("Group name cannot be empty");
+      return;
+    }
+
     setLoading(true);
     const { data: roomData, error } = await supabase
       .from("rooms")
