@@ -1,5 +1,5 @@
-import { supabase } from "src/utils/supabase/component";
-import { createClient } from "src/utils/supabase/server-props";
+import { createClient } from "src/utils/supabase/component";
+import { createClient as createServerClient } from "src/utils/supabase/server-props";
 import { useState, useEffect } from "react";
 import { Room } from "src/types/Room.types";
 import ChatSidebar from "src/components/ChatSidebar";
@@ -12,6 +12,7 @@ export default function Groups({
   groups: Room[];
   currentUserId: string;
 }) {
+  const supabase = createClient();
   const [rooms, setRooms] = useState<Room[]>(groups);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function Groups({
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   // @ts-expect-error Expect
-  const supabase = createClient({ req: ctx.req, res: ctx.res });
+  const supabase = createServerClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const currentUserId = userData?.user?.id;
 

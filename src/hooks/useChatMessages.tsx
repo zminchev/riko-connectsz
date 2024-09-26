@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Message } from "src/types/Message.types";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 
 const useChatMessages = (
   chatId: string | undefined,
@@ -8,6 +8,7 @@ const useChatMessages = (
   userId: string,
   sendPushNotification: (message: Message) => void
 ) => {
+  const supabase = createClient();
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {

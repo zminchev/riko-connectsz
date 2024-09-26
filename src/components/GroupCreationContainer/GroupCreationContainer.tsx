@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Button from "../Button";
 import { User } from "src/types/User.types";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 import Input from "../Input";
 
 const GroupCreationContainer = ({
@@ -12,6 +12,7 @@ const GroupCreationContainer = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const supabase = createClient();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [groupName, setGroupName] = useState("");

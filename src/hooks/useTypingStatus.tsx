@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 
 const useTypingStatus = (
   chatId: string | undefined,
   userId: string,
   inputRef: React.RefObject<HTMLInputElement>
 ) => {
+  const supabase = createClient();
   const [typingUsers, setTypingUsers] = useState<any[]>([]);
 
   useEffect(() => {

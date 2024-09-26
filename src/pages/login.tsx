@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 import { createClient as serverClient } from "src/utils/supabase/server-props";
 import type { PreviewData, GetServerSidePropsContext } from "next";
 import { ParsedUrlQuery } from "querystring";
@@ -10,6 +10,7 @@ import Button from "src/components/Button";
 import Head from "next/head";
 
 export default function LoginPage() {
+  const supabase = createClient();
   const router = useRouter();
 
   const [email, setEmail] = useState("");

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Chat } from "src/types/Chat.types";
 import ChatSidebarItem from "./ChatSidebarItem";
 import { determineUserName } from "src/utils/determineUserName";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 import { IoClose } from "react-icons/io5";
 import Button from "../Button";
 import { useRouter } from "next/router";
@@ -24,6 +24,7 @@ const ChatSidebar = ({
   groups = [],
   onSidebarToggle,
 }: ChatSidebarProps) => {
+  const supabase = createClient();
   const [allChats, setAllChats] = useState<Chat[]>(chats);
   const [allGroups, setAllGroups] = useState<Room[]>(groups);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
