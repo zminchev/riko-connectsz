@@ -79,7 +79,7 @@ const ActiveChat = ({
       return;
     }
 
-    const { data, error: sendMessageError } = await supabase
+    const { error: sendMessageError } = await supabase
       .from("messages")
       .insert([
         {
@@ -90,7 +90,6 @@ const ActiveChat = ({
           image_url: imageUrl || "",
         },
       ])
-      .select("*");
 
     if (sendMessageError) {
       console.error(sendMessageError);
