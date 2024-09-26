@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { createClient } from "src/utils/supabase/component";
+import { supabase } from "src/utils/supabase/component";
 import { createClient as serverClient } from "src/utils/supabase/server-props";
 import type { PreviewData, GetServerSidePropsContext } from "next";
 import { ParsedUrlQuery } from "querystring";
@@ -11,7 +11,6 @@ import Head from "next/head";
 
 export default function LoginPage() {
   const router = useRouter();
-  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

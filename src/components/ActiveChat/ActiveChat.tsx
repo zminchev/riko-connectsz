@@ -4,7 +4,7 @@ import { IoSend } from "react-icons/io5";
 import Button from "../Button";
 import { Chat } from "src/types/Chat.types";
 import { determineUserName } from "src/utils/determineUserName";
-import { createClient } from "src/utils/supabase/component";
+import { supabase } from "src/utils/supabase/component";
 import ChatItem from "./ChatItem";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import useChatMessages from "src/hooks/useChatMessages";
@@ -21,7 +21,6 @@ interface ActiveChatProps {
 }
 
 const ActiveChat = ({ chat, userId, onSidebarToggle }: ActiveChatProps) => {
-  const supabase = createClient();
   const [message, setMessage] = useState("");
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);

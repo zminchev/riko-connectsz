@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { createClient } from "src/utils/supabase/component";
+import { supabase } from "src/utils/supabase/component";
 import { timeSince } from "src/utils/timeSince";
 
 const OtherUserStatus = ({ otherUserId }: { otherUserId: string }) => {
-  const supabase = createClient();
   const [otherUserStatus, setOtherUserStatus] = useState({
     is_online: false,
     last_active: "",

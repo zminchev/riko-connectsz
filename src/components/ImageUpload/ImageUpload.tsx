@@ -1,12 +1,10 @@
-// components/ImageUpload.js
 import { useState, useRef } from "react";
-import { createClient } from "src/utils/supabase/component";
+import { supabase } from "src/utils/supabase/component";
 import { IoAddCircle } from "react-icons/io5";
 import { FaCamera } from "react-icons/fa";
 import Button from "../Button";
 
 const ImageUpload = ({ onUpload }: { onUpload: any }) => {
-  const supabase = createClient();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<any>(null);
   const cameraInputRef = useRef<any>(null);
