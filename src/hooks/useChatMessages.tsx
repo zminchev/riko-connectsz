@@ -38,7 +38,7 @@ const useChatMessages = (
       };
       fetchGroupMessages();
     }
-  }, [chatId, supabase]);
+  }, [chatId, groupId, supabase]);
 
   useEffect(() => {
     const chatChannel = supabase
@@ -86,7 +86,7 @@ const useChatMessages = (
       supabase.removeChannel(groupChannel);
     };
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId]);
+  }, [chatId, groupId]);
 
   return messages;
 };

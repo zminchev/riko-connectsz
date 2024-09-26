@@ -26,7 +26,7 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         .upload(filePath, file);
 
       if (uploadError) {
-        throw uploadError;
+        console.error("Upload Error while trying to upload: ", uploadError);
       }
 
       const { data: signedUrlData, error: signedUrlError } =
@@ -35,7 +35,10 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
           .createSignedUrl(filePath, 60 * 60 * 24); // URL valid for 24 hours
 
       if (signedUrlError) {
-        console.log(signedUrlError);
+        console.error(
+          "Signed URL Error while trying to upload: ",
+          signedUrlError
+        );
       }
 
       onUpload(event, signedUrlData?.signedUrl);
