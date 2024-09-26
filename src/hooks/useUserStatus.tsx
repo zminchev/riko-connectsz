@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 
 const useUserStatus = (currentUserId: string) => {
+  const supabase = createClient();
   useEffect(() => {
     const updateUserStatus = async (status: boolean) => {
       const date = new Date();
@@ -41,7 +42,7 @@ const useUserStatus = (currentUserId: string) => {
       document.removeEventListener("mousemove", resetInactivityTimeout);
       document.removeEventListener("keydown", resetInactivityTimeout);
     };
-  }, [supabase, currentUserId]);
+  }, [currentUserId]);
 };
 
 export default useUserStatus;

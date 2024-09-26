@@ -14,13 +14,13 @@ const ChatsPage = ({
 }: {
   chatsData: Chat[];
   currentUserId: string;
-  activeChat: Chat;
+  activeChat: Chat | null;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const otherUser =
-    activeChat.participant_1_id === currentUserId
+    activeChat?.participant_1_id === currentUserId
       ? activeChat.participant_2
-      : activeChat.participant_1;
+      : activeChat?.participant_1;
 
   const onSidebarToggle = () => {
     setIsOpen(!isOpen);
@@ -40,11 +40,15 @@ const ChatsPage = ({
           isOpen={isOpen}
           onSidebarToggle={onSidebarToggle}
         />
-        <ActiveChat
-          chat={activeChat}
-          userId={currentUserId}
-          onSidebarToggle={onSidebarToggle}
-        />
+        {activeChat ? (
+          <ActiveChat
+            chat={activeChat}
+            userId={currentUserId}
+            onSidebarToggle={onSidebarToggle}
+          />
+        ) : (
+          <div>Choose a chat to start messaging</div>
+        )}
       </div>
     </>
   );
@@ -85,12 +89,15 @@ export const getServerSideProps = async (
       `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`
     );
 
-  const chatSlug = ctx.params?.slug;
+  const chatSlug = ctx.params?.id;
 
-  // Find the active chat based on the chatSlug
-  const activeChat = chatsData?.find((chat) => {
-    return chat.id === chatSlug?.[0]?.toString();
-  });
+  let activeChat = null;
+
+  if (chatsData?.length) {
+    activeChat = chatsData?.find((chat) => {
+      return chat.id === chatSlug?.toString();
+    });
+  }
 
   if (chatError) {
     console.error(chatError);
@@ -99,7 +106,7 @@ export const getServerSideProps = async (
   return {
     props: {
       chatsData,
-      activeChat,
+      activeChat: activeChat,
       currentUserId,
     },
   };

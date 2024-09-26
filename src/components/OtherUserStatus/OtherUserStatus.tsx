@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 import { timeSince } from "src/utils/timeSince";
 
-const OtherUserStatus = ({ otherUserId }: { otherUserId: string }) => {
+const OtherUserStatus = ({ otherUserId }: { otherUserId?: string }) => {
+  const supabase = createClient();
+
   const [otherUserStatus, setOtherUserStatus] = useState({
     is_online: false,
     last_active: "",
@@ -48,7 +50,7 @@ const OtherUserStatus = ({ otherUserId }: { otherUserId: string }) => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [supabase, otherUserId]);
+  }, [otherUserId]);
 
   return (
     <div className="text-xs">

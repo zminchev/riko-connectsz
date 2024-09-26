@@ -2,28 +2,34 @@ import React, { useEffect, useState } from "react";
 import { Chat } from "src/types/Chat.types";
 import ChatSidebarItem from "./ChatSidebarItem";
 import { determineUserName } from "src/utils/determineUserName";
-import { supabase } from "src/utils/supabase/component";
+import { createClient } from "src/utils/supabase/component";
 import { IoClose } from "react-icons/io5";
 import Button from "../Button";
 import { useRouter } from "next/router";
+import { Room } from "src/types/Room.types";
+import { IoIosSettings } from "react-icons/io";
+import GroupCreationContainer from "../GroupCreationContainer";
 interface ChatSidebarProps {
-  chats: Chat[];
+  chats?: Chat[];
+  groups?: Room[];
   currentUserId: string;
   isOpen?: boolean;
   onSidebarToggle?: () => void;
 }
 
 const ChatSidebar = ({
-  chats,
+  chats = [],
   currentUserId,
   isOpen,
+  groups = [],
   onSidebarToggle,
 }: ChatSidebarProps) => {
+  const supabase = createClient();
   const [allChats, setAllChats] = useState<Chat[]>(chats);
-  const router = useRouter();
+  const [allGroups, setAllGroups] = useState<Room[]>(groups);
+  const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
 
-  console.log(currentUserId);
-  
+  const router = useRouter();
 
   const handleLogout = async () => {
     await supabase
@@ -79,9 +85,9 @@ const ChatSidebar = ({
   }, []);
 
   useEffect(() => {
-    if (!supabase || !allChats) return;
+    if (!supabase || !allChats || !allGroups) return;
 
-    const channel = supabase
+    const chatsChannel = supabase
       .channel("public:chats")
       .on(
         "postgres_changes",
@@ -108,52 +114,116 @@ const ChatSidebar = ({
         }
       )
       .subscribe();
+
+    const groupsChannel = supabase
+      .channel("public:rooms")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "rooms",
+        },
+        async (payload) => {
+          const newGroup = payload.new as Room;
+
+          setAllGroups((prevGroups) => [...prevGroups, newGroup] as Room[]);
+        }
+      )
+      .subscribe();
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(chatsChannel);
+      supabase.removeChannel(groupsChannel);
     };
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chats, supabase]);
 
   return (
-    <div
-      className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out flex flex-col
-      ${
-        isOpen ? "translate-x-0" : "-translate-x-full pr-1"
-      } md:translate-x-0 md:static md:w-64 bg-slate-600 z-40 h-screen`}
-    >
-      <div className="p-2 flex justify-end md:hidden">
-        <Button
-          icon={<IoClose className="w-8 h-8" />}
-          onClick={onSidebarToggle}
+    <div>
+      <div
+        className={`fixed w-full h-screen z-50 bg-gray-400/30 p-10 md:p-32 lg:p-64 flex justify-center items-center ${
+          isCreateRoomOpen ? "block" : "hidden"
+        }`}
+      >
+        <GroupCreationContainer
+          isOpen={isCreateRoomOpen}
+          onClose={() => setIsCreateRoomOpen(false)}
         />
       </div>
-      <div className="flex flex-col gap-2 overflow-auto p-2">
-        {filteredChats.length > 0 ? (
-          filteredChats.map((chat) => {
-            const { firstName, lastName } = determineUserName({
-              chat,
-              userId: currentUserId,
-            });
+      <div
+        className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out flex flex-col
+        ${
+          isOpen ? "translate-x-0" : "-translate-x-full pr-1"
+        } md:translate-x-0 md:static md:w-64 bg-slate-600 z-40 h-screen`}
+      >
+        <div className="flex">
+          <div className="flex flex-col gap-4 justify-center p-4 w-full">
+            <Button
+              text="Chats"
+              className="bg-accent-primary p-2 rounded-sm text-black font-bold"
+              onClick={() => router.push("/chats")}
+            />
+            <Button
+              text="Groups"
+              className="bg-accent-primary p-2 rounded-sm text-black font-bold"
+              onClick={() => router.push("/groups")}
+            />
+          </div>
+          <div className="flex items-center justify-center p-6">
+            <Button
+              onClick={() => setIsCreateRoomOpen(!isCreateRoomOpen)}
+              icon={<IoIosSettings className="w-6 h-6" />}
+            />
+          </div>
+        </div>
+        <div className="p-2 flex justify-end md:hidden">
+          <Button
+            icon={<IoClose className="w-8 h-8" />}
+            onClick={onSidebarToggle}
+          />
+        </div>
+        <div className="flex flex-col gap-2 overflow-auto p-2">
+          {filteredChats.length > 0 &&
+            !allGroups.length &&
+            filteredChats.map((chat) => {
+              const { firstName, lastName } = determineUserName({
+                chat,
+                userId: currentUserId,
+              });
 
-            return (
-              <ChatSidebarItem
-                key={chat.id}
-                chatId={chat.id}
-                firstName={firstName}
-                lastName={lastName}
-              />
-            );
-          })
-        ) : (
-          <div className="p-2 rounded-sm">No chats yet</div>
-        )}
-      </div>
-      <div className="w-full p-2 mt-auto">
-        <Button
-          text="Log out"
-          className="p-2 bg-error-primary rounded-sm w-full"
-          onClick={handleLogout}
-        />
+              return (
+                <ChatSidebarItem
+                  key={chat.id}
+                  chatId={chat.id}
+                  firstName={firstName}
+                  lastName={lastName}
+                />
+              );
+            })}
+          {allGroups.length > 0 &&
+            !chats.length &&
+            allGroups.map((group) => {
+              return (
+                <ChatSidebarItem
+                  key={group.id}
+                  groupId={group.id}
+                  groupName={group.name}
+                />
+              );
+            })}
+          {!filteredChats.length && !allGroups.length && (
+            <div className="p-2 rounded-sm">
+              {!filteredChats.length ? "No groups yet" : "No chats yet"}
+            </div>
+          )}
+        </div>
+        <div className="w-full p-2 mt-auto">
+          <Button
+            text="Log out"
+            className="p-2 bg-error-primary rounded-sm w-full"
+            onClick={handleLogout}
+          />
+        </div>
       </div>
     </div>
   );
