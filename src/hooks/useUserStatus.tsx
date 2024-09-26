@@ -41,7 +41,7 @@ const useUserStatus = (currentUserId: string) => {
       document.removeEventListener("mousemove", resetInactivityTimeout);
       document.removeEventListener("keydown", resetInactivityTimeout);
     };
-  }, [supabase, currentUserId]);
+  }, [currentUserId]);
 };
 
 export default useUserStatus;

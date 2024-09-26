@@ -85,7 +85,7 @@ const useChatMessages = (
       supabase.removeChannel(groupChannel);
     };
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId, supabase]);
+  }, [chatId]);
 
   return messages;
 };

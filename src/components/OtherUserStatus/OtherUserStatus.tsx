@@ -48,7 +48,7 @@ const OtherUserStatus = ({ otherUserId }: { otherUserId?: string }) => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [supabase, otherUserId]);
+  }, [otherUserId]);
 
   return (
     <div className="text-xs">

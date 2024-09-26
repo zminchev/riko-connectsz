@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import ChatSidebar from "src/components/ChatSidebar";
 import { createClient } from "src/utils/supabase/server-props";
 import ActiveChat from "src/components/ActiveChat";
-import { useRouter } from "next/router";
 
 const Group = ({
   groups,
@@ -16,7 +15,6 @@ const Group = ({
   activeGroup: Room;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const onSidebarToggle = () => {
     setIsOpen(!isOpen);
