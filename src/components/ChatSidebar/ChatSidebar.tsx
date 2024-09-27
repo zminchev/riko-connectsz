@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { Room } from "src/types/Room.types";
 import { IoIosSettings } from "react-icons/io";
 import GroupCreationContainer from "../GroupCreationContainer";
+import Modal from "../ModalPortal/ModalPortal";
 interface ChatSidebarProps {
   chats?: Chat[];
   groups?: Room[];
@@ -27,7 +28,7 @@ const ChatSidebar = ({
   const supabase = createClient();
   const [allChats, setAllChats] = useState<Chat[]>(chats);
   const [allGroups, setAllGroups] = useState<Room[]>(groups);
-  const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const router = useRouter();
 
@@ -140,16 +141,11 @@ const ChatSidebar = ({
 
   return (
     <div>
-      <div
-        className={`fixed w-full h-screen z-50 bg-gray-400/30 p-10 md:p-32 lg:p-64 flex justify-center items-center ${
-          isCreateRoomOpen ? "block" : "hidden"
-        }`}
-      >
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <GroupCreationContainer
-          isOpen={isCreateRoomOpen}
-          onClose={() => setIsCreateRoomOpen(false)}
+          onClose={() => setIsModalOpen(false)}
         />
-      </div>
+      </Modal>
       <div
         className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out flex flex-col
         ${
@@ -171,7 +167,7 @@ const ChatSidebar = ({
           </div>
           <div className="flex items-center justify-center p-6">
             <Button
-              onClick={() => setIsCreateRoomOpen(!isCreateRoomOpen)}
+              onClick={() => setIsModalOpen(!isModalOpen)}
               icon={<IoIosSettings className="w-6 h-6" />}
             />
           </div>
