@@ -23,6 +23,8 @@ const ChatItem = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
 
+  const imageSrc = imageUrl || '/fallback.png';
+
   const handleImageLoad = () => {
     setIsImageLoading(false);
   };
@@ -36,7 +38,7 @@ const ChatItem = ({
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        hasImage={!!imageUrl}
+        hasImage={!!imageSrc}
       >
         {isImageLoading && (
           <div className="w-full h-full flex justify-center items-center">
@@ -45,7 +47,7 @@ const ChatItem = ({
         )}
         <div className="w-full h-full relative">
           <Image
-            src={imageUrl}
+            src={imageSrc}
             alt="Modal Image"
             fill
             onLoad={handleImageLoad}
@@ -61,15 +63,22 @@ const ChatItem = ({
       >
         {senderName || ""}
       </span>
-      <Image
-        src={imageUrl}
-        width={200}
-        height={200}
-        alt="Uploaded Image"
-        className="hover:cursor-pointer rounded-md"
-        onClick={() => setIsModalOpen(true)}
-        unoptimized
-      />
+      <div className="flex flex-col">
+        <Image
+          src={imageSrc}
+          width={200}
+          height={200}
+          alt="Uploaded Image"
+          className="hover:cursor-pointer rounded-md"
+          onClick={() => setIsModalOpen(true)}
+          unoptimized
+        />
+        <span
+          className={`text-xs pt-1 ${isOtherUser ? "text-right" : "text-left"}`}
+        >
+          {lastMessageTime}
+        </span>
+      </div>
     </div>
   ) : (
     <div
