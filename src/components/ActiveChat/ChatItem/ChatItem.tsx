@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import Modal from "src/components/ModalPortal/ModalPortal";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import formatLastMessageTime from "src/utils/formatLastMessageTime";
 
 interface ChatItemProps {
@@ -20,6 +21,11 @@ const ChatItem = ({
 }: ChatItemProps) => {
   const lastMessageTime: string = formatLastMessageTime(createdAt);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
 
   return imageUrl ? (
     <div
@@ -32,14 +38,19 @@ const ChatItem = ({
         onClose={() => setIsModalOpen(false)}
         hasImage={!!imageUrl}
       >
+        {isImageLoading && (
+          <div className="w-full h-full flex justify-center items-center">
+            <AiOutlineLoading3Quarters className="w-10 h-10 text-white animate-spin" />
+          </div>
+        )}
         <div className="w-full h-full relative">
           <Image
             src={imageUrl}
             alt="Modal Image"
-            layout="fill"
-            objectFit="contain"
+            fill
+            onLoad={handleImageLoad}
             onClick={() => setIsModalOpen(true)}
-            className="cursor-pointer"
+            className="cursor-pointer object-contain"
           />
         </div>
       </Modal>
