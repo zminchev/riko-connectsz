@@ -78,6 +78,7 @@ const useTypingStatus = (
       inputElement.removeEventListener("input", handleTyping);
       channel.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userId, inputRef]);
 
   return { typingUsers };

@@ -29,19 +29,11 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         console.error("Upload Error while trying to upload: ", uploadError);
       }
 
-      const { data: signedUrlData, error: signedUrlError } =
-        await supabase.storage
-          .from("chat_images")
-          .createSignedUrl(filePath, 60 * 60 * 24); // URL valid for 24 hours
+      const { data: signedUrlData } = await supabase.storage
+        .from("chat_images")
+        .getPublicUrl(filePath);
 
-      if (signedUrlError) {
-        console.error(
-          "Signed URL Error while trying to upload: ",
-          signedUrlError
-        );
-      }
-
-      onUpload(event, signedUrlData?.signedUrl);
+      onUpload(event, signedUrlData?.publicUrl);
     } catch (error: any) {
       alert(error.message);
     } finally {

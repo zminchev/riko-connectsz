@@ -45,6 +45,7 @@ const useUserStatus = (currentUserId: string) => {
       document.removeEventListener("keydown", handleUserActivity);
       if (timeoutId) clearTimeout(timeoutId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserId]);
 };
 

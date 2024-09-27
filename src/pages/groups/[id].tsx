@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ChatSidebar from "src/components/ChatSidebar";
 import { createClient } from "src/utils/supabase/server-props";
 import ActiveChat from "src/components/ActiveChat";
+import PageMeta from "src/components/PageMeta";
 
 const Group = ({
   groups,
@@ -21,23 +22,26 @@ const Group = ({
   };
 
   return (
-    <div className="flex">
-      <ChatSidebar
-        groups={groups}
-        currentUserId={currentUserId}
-        isOpen={isOpen}
-        onSidebarToggle={onSidebarToggle}
-      />
-      {activeGroup ? (
-        <ActiveChat
-          room={activeGroup}
-          userId={currentUserId}
+    <>
+      <PageMeta title={`Groups | ${activeGroup?.name}`} />
+      <div className="flex">
+        <ChatSidebar
+          groups={groups}
+          currentUserId={currentUserId}
+          isOpen={isOpen}
           onSidebarToggle={onSidebarToggle}
         />
-      ) : (
-        <div>Choose or create a group to start messaging</div>
-      )}
-    </div>
+        {activeGroup ? (
+          <ActiveChat
+            room={activeGroup}
+            userId={currentUserId}
+            onSidebarToggle={onSidebarToggle}
+          />
+        ) : (
+          <div>Choose or create a group to start messaging</div>
+        )}
+      </div>
+    </>
   );
 };
 
