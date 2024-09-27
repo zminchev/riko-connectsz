@@ -121,21 +121,21 @@ const GroupCreationContainer = () => {
           id="group-name"
           value={groupName}
           placeholder="Group Name"
-          className="w-full"
+          className="w-full bg-dark-secondary text-white"
           onChange={handleGroupNameChange}
         />
         <h3 className="text-lg font-bold">Select users</h3>
-        <div className="user-selection w-full max-h-64 h-64 min-h-64 overflow-y-auto p-4 bg-white rounded-md text-dark-primary">
+        <div className="user-selection w-full max-h-64 h-64 min-h-64 overflow-y-auto p-4 bg-dark-secondary rounded-md text-white divide-y flex justify-center flex-col">
           {!loading ? (
             users.map((user) => (
-              <div key={user.id} className="flex items-center mb-2">
+              <div key={user.id} className="flex items-center p-2 bg-d">
                 <input
                   ref={checkboxRef}
                   type="checkbox"
                   id={`user-${user.id}`}
                   value={user.id}
                   onChange={(e) => handleUserSelection(user, e.target.checked)}
-                  className="mr-2"
+                  className="mr-2 accent-accent-secondary"
                 />
                 <label htmlFor={`user-${user.id}`}>
                   {user.first_name} {user.last_name}
@@ -152,7 +152,7 @@ const GroupCreationContainer = () => {
           text={`${
             loading && isCreatingGroup ? "Creating..." : "Create Group"
           }`}
-          className="bg-accent-primary p-2 rounded-sm text-black font-bold disabled:bg-dark-primary disabled:text-message-text disabled:opacity-45 disabled:cursor-not-allowed"
+          className="bg-accent-primary p-2 rounded-sm text-black font-bold disabled:bg-gray-500 disabled:text-message-text disabled:opacity-45 disabled:cursor-not-allowed"
           onClick={createGroup}
           disabled={loading}
         />

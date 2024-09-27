@@ -42,7 +42,7 @@ const Modal: React.FC<ModalProps> = ({
 
       <div
         className={`rounded-lg p-1 z-10 w-full transform transition-transform duration-300 ease-out  ${
-          !hasImage ? "max-w-lg bg-accent-secondary" : "h-full"
+          !hasImage ? "max-w-lg bg-dark-primary text-white" : "h-full"
         } ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
       >
         <button
