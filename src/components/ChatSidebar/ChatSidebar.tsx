@@ -142,9 +142,7 @@ const ChatSidebar = ({
   return (
     <div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <GroupCreationContainer
-          onClose={() => setIsModalOpen(false)}
-        />
+        <GroupCreationContainer />
       </Modal>
       <div
         className={`fixed inset-y-0 left-0 w-64 p-2 transform transition-transform duration-300 ease-in-out flex flex-col

@@ -50,6 +50,7 @@ const OtherUserStatus = ({ otherUserId }: { otherUserId?: string }) => {
     return () => {
       supabase.removeChannel(subscription);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otherUserId]);
 
   return (

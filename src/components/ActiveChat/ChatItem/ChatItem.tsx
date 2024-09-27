@@ -32,12 +32,16 @@ const ChatItem = ({
         onClose={() => setIsModalOpen(false)}
         hasImage={!!imageUrl}
       >
-        <img
-          src={imageUrl}
-          className="w-full h-full object-contain"
-          onClick={() => setIsModalOpen(true)}
-          alt="Modal Image"
-        />
+        <div className="w-full h-full relative">
+          <Image
+            src={imageUrl}
+            alt="Modal Image"
+            layout="fill"
+            objectFit="contain"
+            onClick={() => setIsModalOpen(true)}
+            className="cursor-pointer"
+          />
+        </div>
       </Modal>
       <span
         className={`absolute -top-4 text-xs ${
@@ -51,7 +55,7 @@ const ChatItem = ({
         width={200}
         height={200}
         alt="Uploaded Image"
-        className="hover:cursor-pointer"
+        className="hover:cursor-pointer rounded-md"
         onClick={() => setIsModalOpen(true)}
         unoptimized
       />

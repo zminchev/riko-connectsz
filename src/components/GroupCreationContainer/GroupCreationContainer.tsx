@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { IoClose } from "react-icons/io5";
 import Button from "../Button";
 import { User } from "src/types/User.types";
 import { createClient } from "src/utils/supabase/component";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Input from "../Input";
 
-const GroupCreationContainer = ({ onClose }: { onClose: () => void }) => {
+const GroupCreationContainer = () => {
   const supabase = createClient();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -109,6 +108,7 @@ const GroupCreationContainer = ({ onClose }: { onClose: () => void }) => {
     };
 
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

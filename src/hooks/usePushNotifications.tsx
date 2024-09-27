@@ -4,7 +4,11 @@ import { Message } from "src/types/Message.types";
 let lastNotificationTime = 0;
 const THROTTLE_INTERVAL = 5000;
 
-const usePushNotifications = (firstName?: string, lastName?: string, groupName?: string) => {
+const usePushNotifications = (
+  firstName?: string,
+  lastName?: string,
+  groupName?: string
+) => {
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
   const [canPlaySound, setCanPlaySound] = useState<boolean>(false);
   const [pendingSound, setPendingSound] = useState<boolean>(false);
@@ -70,7 +74,10 @@ const usePushNotifications = (firstName?: string, lastName?: string, groupName?:
 
       // Prepare the payload with the message details
 
-      const messageFrom = firstName && lastName ? `You have a new message from ${firstName} ${lastName}` : `New message in ${groupName}`;
+      const messageFrom =
+        firstName && lastName
+          ? `You have a new message from ${firstName} ${lastName}`
+          : `New message in ${groupName}`;
       const payload = {
         title: messageFrom,
         body: message.content,
@@ -120,6 +127,7 @@ const usePushNotifications = (firstName?: string, lastName?: string, groupName?:
       document.removeEventListener("click", enableSound);
       document.removeEventListener("keydown", enableSound);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { sendPushNotification, notificationSoundRef };

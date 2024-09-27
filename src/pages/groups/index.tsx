@@ -18,6 +18,7 @@ export default function Groups({
 
   useEffect(() => {
     fetchRooms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchRooms = async () => {
@@ -29,7 +30,7 @@ export default function Groups({
 
   return (
     <>
-    <PageMeta title="Riko ConnectsZ | Groups" />
+      <PageMeta title="Riko ConnectsZ | Groups" />
       <div>
         <ChatSidebar
           groups={rooms}
