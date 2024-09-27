@@ -7,11 +7,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-dark-primary;
+  @apply bg-white;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-accent-secondary;
+  @apply bg-cyan-500;
 }
 
 ::-webkit-scrollbar-thumb:hover {

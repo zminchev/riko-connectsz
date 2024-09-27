@@ -13,12 +13,12 @@ import useUserStatus from "src/hooks/useUserStatus";
 import OtherUserStatus from "../OtherUserStatus";
 import useTypingStatus from "src/hooks/useTypingStatus";
 import ImageUpload from "../ImageUpload";
-import { Room } from "src/types/Room.types";
+import { Group } from "src/types/Group.types";
 import { getCurrentSenderName } from "src/utils/getCurrentSenderName";
 
 interface ActiveChatProps {
   chat?: Chat | null;
-  room?: Room;
+  room?: Group;
   userId: string;
   onSidebarToggle: () => void;
 }

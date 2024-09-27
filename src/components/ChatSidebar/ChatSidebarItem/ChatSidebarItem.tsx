@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import React from "react";
 
 interface ChatSidebarItemProps {
@@ -8,6 +8,7 @@ interface ChatSidebarItemProps {
   groupName?: string;
   chatId?: string;
   groupId?: string;
+  userPhoto?: string;
 }
 
 const ChatSidebarItem = ({
@@ -16,26 +17,39 @@ const ChatSidebarItem = ({
   groupName = "",
   chatId,
   groupId,
+  userPhoto = "",
 }: ChatSidebarItemProps) => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const joinedName = `${firstName} ${lastName}`;
-  const isChatActive = router?.query?.id?.toString() === chatId;
-  const isGroupActive = router?.query?.id?.toString() === groupId;
-  const isActive = isChatActive || isGroupActive;
+  const fallbackName = `${firstName.slice(0, 1).toUpperCase()}${lastName
+    .slice(0, 1)
+    .toUpperCase()}`;
+  // const isChatActive = router?.query?.id?.toString() === chatId;
+  // const isGroupActive = router?.query?.id?.toString() === groupId;
+  // const isActive = isChatActive || isGroupActive;
 
   const linkHref = chatId ? `/chats/${chatId}` : `/groups/${groupId}`;
 
   return (
-    <Link href={linkHref}>
-      <div
-        className={`${
-          isActive
-            ? "bg-accent-secondary text-text-primary"
-            : "bg-dark-primary hover:bg-accent-secondary hover:text-text-primary"
-        }  hover:shadow-md shadow-sm transition-colors duraion-300 ease-in-out w-full text-center p-4 rounded-sm font-bold`}
-      >
-        {!joinedName.trim() ? groupName : joinedName}
+    <Link href={linkHref} className="px-2">
+      <div className="bg-white text-gray-500 p-2 hover:bg-gray-300 hover:text-gray-700 transition-colors duration-150 rounded-sm">
+        <div className="flex items-center gap-x-3">
+          <div className="w-12 h-12 rounded-full overflow-hidden border border-cyan-500">
+            {userPhoto ? (
+              <img
+                className="w-full h-full object-cover"
+                src={userPhoto}
+                alt="User Photo"
+              />
+            ) : (
+              <div className="w-full h-full flex justify-center items-center">
+                {fallbackName}
+              </div>
+            )}
+          </div>
+          {!joinedName.trim() ? groupName : joinedName}
+        </div>
       </div>
     </Link>
   );

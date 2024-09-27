@@ -6,13 +6,16 @@ import { createClient } from "src/utils/supabase/component";
 import { IoClose } from "react-icons/io5";
 import Button from "../Button";
 import { useRouter } from "next/router";
-import { Room } from "src/types/Room.types";
+import { Group } from "src/types/Group.types";
 import { IoIosSettings } from "react-icons/io";
+import { AiOutlineRight } from "react-icons/ai";
 import GroupCreationContainer from "../GroupCreationContainer";
 import Modal from "../ModalPortal/ModalPortal";
+import SidebarHeader from "./SidebarHeader";
+import SidebarContent from "./SidebarContent";
 interface ChatSidebarProps {
   chats?: Chat[];
-  groups?: Room[];
+  groups?: Group[];
   currentUserId: string;
   isOpen?: boolean;
   onSidebarToggle?: () => void;
@@ -27,7 +30,7 @@ const ChatSidebar = ({
 }: ChatSidebarProps) => {
   const supabase = createClient();
   const [allChats, setAllChats] = useState<Chat[]>(chats);
-  const [allGroups, setAllGroups] = useState<Room[]>(groups);
+  const [allGroups, setAllGroups] = useState<Group[]>(groups);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const router = useRouter();
@@ -126,9 +129,9 @@ const ChatSidebar = ({
           table: "rooms",
         },
         async (payload) => {
-          const newGroup = payload.new as Room;
+          const newGroup = payload.new as Group;
 
-          setAllGroups((prevGroups) => [...prevGroups, newGroup] as Room[]);
+          setAllGroups((prevGroups) => [...prevGroups, newGroup] as Group[]);
         }
       )
       .subscribe();
@@ -140,8 +143,15 @@ const ChatSidebar = ({
   }, [chats, supabase]);
 
   return (
-    <div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+    <div className={`flex flex-col h-screen`}>
+      <SidebarHeader isOpen={true} />
+      <SidebarContent
+        chats={filteredChats}
+        groups={allGroups}
+        currentUserId={currentUserId}
+        onLogout={handleLogout}
+      />
+      {/* <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <GroupCreationContainer />
       </Modal>
       <div
@@ -218,7 +228,7 @@ const ChatSidebar = ({
             onClick={handleLogout}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

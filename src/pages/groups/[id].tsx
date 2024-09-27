@@ -1,19 +1,19 @@
 import { GetServerSidePropsContext } from "next";
-import { Room } from "src/types/Room.types";
+import { Group } from "src/types/Group.types";
 import React, { useState } from "react";
 import ChatSidebar from "src/components/ChatSidebar";
 import { createClient } from "src/utils/supabase/server-props";
 import ActiveChat from "src/components/ActiveChat";
 import PageMeta from "src/components/PageMeta";
 
-const Group = ({
+const GroupPage = ({
   groups,
   currentUserId,
   activeGroup,
 }: {
-  groups: Room[];
+  groups: Group[];
   currentUserId: string;
-  activeGroup: Room;
+  activeGroup: Group;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,7 +45,7 @@ const Group = ({
   );
 };
 
-export default Group;
+export default GroupPage;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   //@ts-expect-error - Supabase client is not initialized

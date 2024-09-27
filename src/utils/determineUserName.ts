@@ -1,9 +1,9 @@
 import { Chat } from "src/types/Chat.types";
-import { Room } from "src/types/Room.types";
+import { Group } from "src/types/Group.types";
 
 interface DetermineUserNameProps {
   chat?: Chat | null;
-  room?: Room;
+  room?: Group;
   userId: string;
 }
 export const determineUserName = ({
@@ -18,11 +18,11 @@ export const determineUserName = ({
 
   const firstName = otherUser?.first_name;
   const lastName = otherUser?.last_name;
-  const roomName = room?.name;
+  const groupName = room?.name; //TODO Change to group
 
   return {
     firstName,
     lastName,
-    roomName,
+    groupName,
   };
 };

@@ -11,8 +11,11 @@ const ChatsIndex = ({
   currentUserId: string;
 }) => {
   return (
-    <div className="flex">
+    <div className="flex bg-gray-500">
       <ChatSidebar chats={chats} currentUserId={currentUserId} />
+      <div className="w-full flex justify-center items-center">
+        <h2>Select a person from the sidebar to start messaging</h2>
+      </div>
     </div>
   );
 };
@@ -49,14 +52,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     .or(
       `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`
     );
-
-  if (chatsData?.length) {
-    return {
-      redirect: {
-        destination: `/chats/${chatsData[0].id}`,
-      },
-    };
-  }
 
   return {
     props: {
