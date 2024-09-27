@@ -29,16 +29,16 @@ const SidebarContent = ({
 
   return (
     <>
-      <div className="inset-y-0 bg-white p-2 w-96 h-screen overflow-y-auto">
-        <Card className="pt-2 pb-4 flex flex-col gap-1 h-full">
+      <div className="inset-y-0 bg-white pt-2 pb-4 px-2 w-96 h-screen overflow-y-auto">
+        <Card className="pt-2 flex flex-col gap-1 h-full">
           {chats.length > 0 && (
             <ChatsDisplay chats={filteredChats} currentUserId={currentUserId} />
           )}
           {groups.length > 0 && <GroupsDisplay groups={groups} />}
         </Card>
       </div>
-      <div className="inset-y-0 bg-white py-2 pl-2 pr-3 w-96">
-        <Card className="p-4 flex justify-between items-center">
+      <div className="inset-y-0 bg-white p-2 w-96">
+        <Card className="p-3 flex justify-between items-center">
           <Button
             icon={<IoMdExit className="w-6 h-6" />}
             className="text-black hover:text-error-primary transition-colors duration-150 p-2"

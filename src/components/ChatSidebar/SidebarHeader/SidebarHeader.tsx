@@ -23,10 +23,15 @@ const SidebarHeaderOptions = [
 
 const SidebarHeader = ({ isOpen }: { isOpen: boolean }) => {
   const router = useRouter();
+  console.log(router);
 
   const pathName = router.pathname;
   const isActive = (href: string) => {
-    return href === pathName;
+    const splitPath = pathName.split("/");
+
+    if (splitPath[1] === href.split("/")[1]) return true;
+
+    return false;
   };
 
   return (
@@ -42,7 +47,9 @@ const SidebarHeader = ({ isOpen }: { isOpen: boolean }) => {
               key={option.id}
               text={option.text}
               className={`py-2 px-8 text-sm border-t border-b last:border-r first:border-l border-cyan-600 first:rounded-tl first:rounded-bl last:rounded-tr last:rounded-br ${
-                isActive(option.href) ? "text-white bg-cyan-600" : "bg-white text-cyan-600"
+                isActive(option.href)
+                  ? "text-white bg-cyan-600"
+                  : "bg-white text-cyan-600"
               }`}
               onClick={() => router.push(option.href)}
             />

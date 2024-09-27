@@ -15,6 +15,9 @@ import useTypingStatus from "src/hooks/useTypingStatus";
 import ImageUpload from "../ImageUpload";
 import { Group } from "src/types/Group.types";
 import { getCurrentSenderName } from "src/utils/getCurrentSenderName";
+import ActiveChatHeader from "./ActiveChatHeader";
+import ActiveChatContent from "./ActiveChatContent";
+import ActiveChatInput from "./ActiveChatInput";
 
 interface ActiveChatProps {
   chat?: Chat | null;
@@ -128,8 +131,11 @@ const ActiveChat = ({
   );
 
   return (
-    <div className="p-2 bg-slate-600 w-full flex flex-col gap-1 h-screen relative">
-      <Button
+    <div className="bg-white w-full flex flex-col h-screen relative">
+      <ActiveChatHeader firstName={firstName} lastName={lastName} />
+      <ActiveChatContent />
+      <ActiveChatInput />
+      {/* <Button
         className="absolute left-[10px] top-[15px] md:hidden"
         icon={<MdKeyboardArrowRight className="w-8 h-8" />}
         onClick={onSidebarToggle}
@@ -209,7 +215,7 @@ const ActiveChat = ({
           />
         </form>
       </div>
-      <audio ref={notificationSoundRef} src="/sounds/notification.mp3" />
+      <audio ref={notificationSoundRef} src="/sounds/notification.mp3" /> */}
     </div>
   );
 };
