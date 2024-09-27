@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Room } from "src/types/Room.types";
 import ChatSidebar from "src/components/ChatSidebar";
 import { GetServerSidePropsContext } from "next";
+import PageMeta from "src/components/PageMeta";
 
 export default function Groups({
   groups,
@@ -27,9 +28,16 @@ export default function Groups({
   };
 
   return (
-    <div>
-      <ChatSidebar groups={rooms} currentUserId={currentUserId} isOpen={true} />
-    </div>
+    <>
+    <PageMeta title="Riko ConnectsZ | Groups" />
+      <div>
+        <ChatSidebar
+          groups={rooms}
+          currentUserId={currentUserId}
+          isOpen={true}
+        />
+      </div>
+    </>
   );
 }
 

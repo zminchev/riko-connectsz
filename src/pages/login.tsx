@@ -7,7 +7,7 @@ import type { PreviewData, GetServerSidePropsContext } from "next";
 import { ParsedUrlQuery } from "querystring";
 import Input from "src/components/Input/Input";
 import Button from "src/components/Button";
-import Head from "next/head";
+import PageMeta from "src/components/PageMeta";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -63,9 +63,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Head>
-        <title>Riko ConnectsZ | Login</title>
-      </Head>
+      <PageMeta title="Riko ConnectsZ | Login" />
       <main className="h-screen w-full">
         <form className="w-full h-full p-6 md:p-0">
           <div className="flex flex-col items-center justify-center gap-2 w-full h-full">

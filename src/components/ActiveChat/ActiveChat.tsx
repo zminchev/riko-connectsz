@@ -169,6 +169,7 @@ const ActiveChat = ({
                 senderName={nameOfUser}
                 isOtherUser={isOtherUser}
                 imageUrl={message.image_url}
+                createdAt={message.created_at}
               />
             );
           })

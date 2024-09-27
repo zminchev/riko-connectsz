@@ -1,9 +1,9 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
-import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 import React, { useState } from "react";
 import ActiveChat from "src/components/ActiveChat";
 import ChatSidebar from "src/components/ChatSidebar";
+import PageMeta from "src/components/PageMeta";
 import { Chat } from "src/types/Chat.types";
 import { createClient } from "src/utils/supabase/server-props";
 
@@ -26,13 +26,11 @@ const ChatsPage = ({
     setIsOpen(!isOpen);
   };
 
+  const userNames = `${otherUser?.first_name} ${otherUser?.last_name}`;
+
   return (
     <>
-      <Head>
-        <title>
-          Chats | {otherUser?.first_name} {otherUser?.last_name}
-        </title>
-      </Head>
+      <PageMeta title={`Chats | ${userNames}`} />
       <div className="flex">
         <ChatSidebar
           chats={chatsData}
