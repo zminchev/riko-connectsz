@@ -23,7 +23,7 @@ const ChatItem = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
 
-  const imageSrc = imageUrl || '/fallback.png';
+  const imageSrc = imageUrl || "/fallback.png";
 
   const handleImageLoad = () => {
     setIsImageLoading(false);
@@ -72,6 +72,7 @@ const ChatItem = ({
           className="hover:cursor-pointer rounded-md"
           onClick={() => setIsModalOpen(true)}
           unoptimized
+          priority
         />
         <span
           className={`text-xs pt-1 ${isOtherUser ? "text-right" : "text-left"}`}
