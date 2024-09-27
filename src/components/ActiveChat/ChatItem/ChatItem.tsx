@@ -1,5 +1,6 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import Modal from "src/components/ModalPortal/ModalPortal";
 import formatLastMessageTime from "src/utils/formatLastMessageTime";
 
 interface ChatItemProps {
@@ -18,6 +19,7 @@ const ChatItem = ({
   createdAt,
 }: ChatItemProps) => {
   const lastMessageTime: string = formatLastMessageTime(createdAt);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return imageUrl ? (
     <div
@@ -25,6 +27,18 @@ const ChatItem = ({
         isOtherUser ? "justify-end" : "justify-start"
       } mb-3`}
     >
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        hasImage={!!imageUrl}
+      >
+        <img
+          src={imageUrl}
+          className="w-full h-full object-contain"
+          onClick={() => setIsModalOpen(true)}
+          alt="Modal Image"
+        />
+      </Modal>
       <span
         className={`absolute -top-4 text-xs ${
           isOtherUser ? "text-right right-1" : "text-left left-1"
@@ -37,6 +51,8 @@ const ChatItem = ({
         width={200}
         height={200}
         alt="Uploaded Image"
+        className="hover:cursor-pointer"
+        onClick={() => setIsModalOpen(true)}
         unoptimized
       />
     </div>

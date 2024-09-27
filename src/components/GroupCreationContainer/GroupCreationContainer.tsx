@@ -112,9 +112,6 @@ const GroupCreationContainer = ({ onClose }: { onClose: () => void }) => {
   }, []);
   return (
     <>
-      <div className="w-full flex justify-end p-4">
-        <Button icon={<IoClose className="w-6 h-6" />} onClick={onClose} />
-      </div>
       <div className="flex flex-col justify-center items-center p-4 w-full h-full gap-4 rounded-b-md">
         <h2 className="text-center text-xl pb-4">
           Choose who you want to create a group chat with
@@ -152,7 +149,9 @@ const GroupCreationContainer = ({ onClose }: { onClose: () => void }) => {
           )}
         </div>
         <Button
-          text={`${loading && isCreatingGroup ? "Creating..." : "Create Group"}`}
+          text={`${
+            loading && isCreatingGroup ? "Creating..." : "Create Group"
+          }`}
           className="bg-accent-primary p-2 rounded-sm text-black font-bold disabled:bg-dark-primary disabled:text-message-text disabled:opacity-45 disabled:cursor-not-allowed"
           onClick={createGroup}
           disabled={loading}
