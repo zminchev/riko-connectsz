@@ -13,7 +13,7 @@ const ChatsDisplay = ({
   return (
     chats.length > 0 &&
     chats.map((chat) => {
-      const { firstName, lastName } = determineUserName({
+      const { firstName, lastName, profilePhoto } = determineUserName({
         chat,
         userId: currentUserId,
       });
@@ -21,6 +21,7 @@ const ChatsDisplay = ({
         <ChatSidebarItem
           key={chat.id}
           chatId={chat.id}
+          userPhoto={profilePhoto}
           firstName={firstName}
           lastName={lastName}
         />

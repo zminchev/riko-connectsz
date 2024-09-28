@@ -53,8 +53,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     participant_1_id,
     participant_2_id,
     created_at,
-    participant_1:participant_1_id(first_name, last_name),
-    participant_2:participant_2_id(first_name, last_name)
+    participant_1:participant_1_id(first_name, last_name, profile_photo),
+    participant_2:participant_2_id(first_name, last_name, profile_photo)
   `
     )
     .or(

@@ -1,14 +1,12 @@
-import React from "react";
-import Card from "src/components/Card";
-import { Chat } from "src/types/Chat.types";
-import { determineUserName } from "src/utils/determineUserName";
-import ChatSidebarItem from "../ChatSidebarItem";
-import { Group } from "src/types/Group.types";
-import ChatsDisplay from "src/components/ChatsDisplay";
-import GroupsDisplay from "src/components/GroupsDisplay";
-import Button from "src/components/Button";
-import { IoMdSettings } from "react-icons/io";
-import { IoMdExit } from "react-icons/io";
+import React from 'react';
+import Card from 'src/components/Card';
+import { Chat } from 'src/types/Chat.types';
+import { Group } from 'src/types/Group.types';
+import ChatsDisplay from 'src/components/ChatsDisplay';
+import GroupsDisplay from 'src/components/GroupsDisplay';
+import Button from 'src/components/Button';
+import { IoMdSettings } from 'react-icons/io';
+import { IoMdExit } from 'react-icons/io';
 
 const SidebarContent = ({
   chats = [],
@@ -24,7 +22,7 @@ const SidebarContent = ({
   const filteredChats = chats.filter(
     (chat) =>
       chat.participant_1_id === currentUserId ||
-      chat.participant_2_id === currentUserId
+      chat.participant_2_id === currentUserId,
   );
 
   return (

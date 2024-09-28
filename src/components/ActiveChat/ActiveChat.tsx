@@ -23,7 +23,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
   const [message, setMessage] = useState('');
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { firstName, lastName } = determineUserName({ chat, userId });
+  const { firstName, lastName, profilePhoto } = determineUserName({ chat, userId });
   const { sendPushNotification, notificationSoundRef } = usePushNotifications(
     firstName,
     lastName,
@@ -129,6 +129,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         lastName={lastName}
         participantsNames={participantsNames}
         groupName={room?.name}
+        userPhoto={profilePhoto}
       />
       <ActiveChatContent
         messages={messages}

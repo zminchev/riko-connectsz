@@ -18,11 +18,14 @@ export const determineUserName = ({
 
   const firstName = otherUser?.first_name;
   const lastName = otherUser?.last_name;
+  const profilePhoto = otherUser?.profile_photo;
+
   const groupName = room?.name; //TODO Change to group
 
   return {
     firstName,
     lastName,
+    profilePhoto,
     groupName,
   };
 };
