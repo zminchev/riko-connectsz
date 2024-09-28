@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import UserPhotoOrAbbreviation from 'src/components/UserPhotoOrAbbreviation/UserPhotoOrAbbreviation';
 import { getUserLettersFromName } from 'src/utils/getUserLettersFromName';
 const ChatMessage = ({

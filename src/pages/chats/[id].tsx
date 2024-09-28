@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext, PreviewData } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useState } from 'react';
+import React from 'react';
 import ActiveChat from 'src/components/ActiveChat';
 import ChatSidebar from 'src/components/ChatSidebar';
 import PageMeta from 'src/components/PageMeta';
@@ -16,15 +16,10 @@ const ChatsPage = ({
   currentUserId: string;
   activeChat: Chat | null;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const otherUser =
     activeChat?.participant_1_id === currentUserId
       ? activeChat.participant_2
       : activeChat?.participant_1;
-
-  const onSidebarToggle = () => {
-    setIsOpen(!isOpen);
-  };
 
   const userNames = `${otherUser?.first_name} ${otherUser?.last_name}`;
 
@@ -90,8 +85,6 @@ export const getServerSideProps = async (
   if (chatError) {
     console.error(chatError);
   }
-
-  console.log(activeChat);
 
   return {
     props: {

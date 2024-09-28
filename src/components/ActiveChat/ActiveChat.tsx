@@ -5,7 +5,7 @@ import { createClient } from 'src/utils/supabase/component';
 import useChatMessages from 'src/hooks/useChatMessages';
 import usePushNotifications from 'src/hooks/usePushNotifications';
 import useUserStatus from 'src/hooks/useUserStatus';
-import useTypingStatus from 'src/hooks/useTypingStatus';
+// import useTypingStatus from 'src/hooks/useTypingStatus';
 import { Group } from 'src/types/Group.types';
 import ActiveChatHeader from './ActiveChatHeader';
 import ActiveChatContent from './ActiveChatContent';
@@ -35,7 +35,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
     userId,
     sendPushNotification,
   );
-  const { typingUsers } = useTypingStatus(chat?.id, userId, messageInputRef);
+  // const { typingUsers } = useTypingStatus(chat?.id, userId, messageInputRef);
 
   useUserStatus(userId);
 

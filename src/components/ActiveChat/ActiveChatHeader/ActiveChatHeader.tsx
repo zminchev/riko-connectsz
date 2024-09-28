@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import Card from 'src/components/Card';
 import OtherUserStatus from 'src/components/OtherUserStatus';
@@ -22,10 +23,11 @@ const ActiveChatHeader = ({
     <div className="bg-white text-gray-500 pt-2">
       <Card className="py-[0.70rem] flex items-center pl-4">
         <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-cyan-500">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-cyan-500 relative">
             {userPhoto ? (
-              <img
+              <Image
                 className="w-full h-full object-cover"
+                fill
                 src={userPhoto}
                 alt="User Photo"
               />

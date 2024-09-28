@@ -59,8 +59,6 @@ const useTypingStatus = (
       const usersTyping = [];
 
       for (const [id, presences] of Object.entries(state)) {
-        console.log(presences);
-
         if (id !== userId.toString()) {
           // Get the latest presence data
           const latestPresence = presences[presences.length - 1];

@@ -1,22 +1,22 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
-import { createClient } from "src/utils/supabase/component";
-import { createClient as serverClient } from "src/utils/supabase/server-props";
-import type { PreviewData, GetServerSidePropsContext } from "next";
-import { ParsedUrlQuery } from "querystring";
-import Input from "src/components/Input/Input";
-import Button from "src/components/Button";
-import PageMeta from "src/components/PageMeta";
+import { createClient } from 'src/utils/supabase/component';
+import { createClient as serverClient } from 'src/utils/supabase/server-props';
+import type { PreviewData, GetServerSidePropsContext } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import Input from 'src/components/Input/Input';
+import Button from 'src/components/Button';
+import PageMeta from 'src/components/PageMeta';
 
 export default function LoginPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   async function logIn() {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -25,13 +25,11 @@ export default function LoginPage() {
     });
 
     await supabase
-      .from("users")
+      .from('users')
       .update({
         is_online: true,
       })
-      .eq("id", data?.user?.id);
-
-    console.log(data);
+      .eq('id', data?.user?.id);
 
     if (error) {
       console.error(error);
@@ -47,7 +45,7 @@ export default function LoginPage() {
     });
 
     if (userAuthData) {
-      await supabase.from("users").insert({
+      await supabase.from('users').insert({
         id: userAuthData?.user?.id,
         email,
         first_name: firstName,
@@ -120,11 +118,11 @@ export default function LoginPage() {
 }
 
 export const getServerSideProps = async (
-  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
 ) => {
   const supabase = serverClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
-  const { data: chat, error } = await supabase.from("chats").select("*");
+  const { data: chat, error } = await supabase.from('chats').select('*');
 
   if (userData.user && chat) {
     return {

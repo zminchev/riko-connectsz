@@ -134,7 +134,7 @@ const ChatSidebar = ({
 
   return (
     <div className={`flex flex-col h-screen`}>
-      <SidebarHeader isOpen={true} />
+      <SidebarHeader />
       <SidebarContent
         chats={filteredChats}
         groups={allGroups}

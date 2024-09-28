@@ -22,10 +22,8 @@ const SidebarHeaderOptions = [
 ];
 
 const SidebarHeader = ({
-  isOpen,
   isInSettings,
 }: {
-  isOpen?: boolean;
   isInSettings?: boolean;
 }) => {
   const router = useRouter();

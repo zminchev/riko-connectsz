@@ -1,10 +1,9 @@
+import Image from 'next/image';
 import React from 'react';
 
 const UserPhotoOrAbbreviation = ({
   userPhoto,
   fallbackName,
-  width = '12',
-  height = '12',
   className = '',
 }: {
   userPhoto?: string;
@@ -15,11 +14,12 @@ const UserPhotoOrAbbreviation = ({
 }) => {
   return (
     <div
-      className={`${className} w-${width} h-${height} rounded-full overflow-hidden border border-cyan-500`}
+      className={`w-10 h-10 rounded-full overflow-hidden border border-cyan-500 relative ${className}`}
     >
       {userPhoto ? (
-        <img
+        <Image
           className="w-full h-full object-cover"
+          fill
           src={userPhoto}
           alt="User Photo"
         />
