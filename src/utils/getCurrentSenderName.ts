@@ -1,21 +1,21 @@
 export const getCurrentSenderName = (
   messageSenderId: string,
   filteredRoomParticipants?: {
-    user_id: string;
-    users: {
-      first_name: string;
-      last_name: string;
-    };
-  }[]
+    userId: string;
+    userPhoto: string;
+    firstName: string;
+    lastName: string;
+    userInitials: string;
+  }[],
 ) => {
   const groupParticipantName = filteredRoomParticipants?.find(
     (roomParticipant) => {
-      return roomParticipant.user_id === messageSenderId;
-    }
+      return roomParticipant.userId === messageSenderId;
+    },
   );
 
-  const firstName = groupParticipantName?.users.first_name;
-  const lastName = groupParticipantName?.users.last_name;
+  const firstName = groupParticipantName?.firstName;
+  const lastName = groupParticipantName?.lastName;
 
   const joinedNames = `${firstName} ${lastName}`;
   return joinedNames;

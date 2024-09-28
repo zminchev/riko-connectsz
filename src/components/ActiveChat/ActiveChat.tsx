@@ -1,58 +1,43 @@
-import React, { useEffect, useRef, useState } from "react";
-import Input from "../Input";
-import { IoSend } from "react-icons/io5";
-import Button from "../Button";
-import { Chat } from "src/types/Chat.types";
-import { determineUserName } from "src/utils/determineUserName";
-import { createClient } from "src/utils/supabase/component";
-import ChatItem from "./ChatItem";
-import { MdKeyboardArrowRight } from "react-icons/md";
-import useChatMessages from "src/hooks/useChatMessages";
-import usePushNotifications from "src/hooks/usePushNotifications";
-import useUserStatus from "src/hooks/useUserStatus";
-import OtherUserStatus from "../OtherUserStatus";
-import useTypingStatus from "src/hooks/useTypingStatus";
-import ImageUpload from "../ImageUpload";
-import { Room } from "src/types/Room.types";
-import { getCurrentSenderName } from "src/utils/getCurrentSenderName";
+import React, { useEffect, useRef, useState } from 'react';
+import { Chat } from 'src/types/Chat.types';
+import { determineUserName } from 'src/utils/determineUserName';
+import { createClient } from 'src/utils/supabase/component';
+import useChatMessages from 'src/hooks/useChatMessages';
+import usePushNotifications from 'src/hooks/usePushNotifications';
+import useUserStatus from 'src/hooks/useUserStatus';
+// import useTypingStatus from 'src/hooks/useTypingStatus';
+import { Group } from 'src/types/Group.types';
+import ActiveChatHeader from './ActiveChatHeader';
+import ActiveChatContent from './ActiveChatContent';
+import ActiveChatInput from './ActiveChatInput';
+import { getUserLettersFromName } from 'src/utils/getUserLettersFromName';
 
 interface ActiveChatProps {
   chat?: Chat | null;
-  room?: Room;
+  room?: Group;
   userId: string;
-  onSidebarToggle: () => void;
 }
 
-const ActiveChat = ({
-  chat,
-  room,
-  userId,
-  onSidebarToggle,
-}: ActiveChatProps) => {
+const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
   const supabase = createClient();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { firstName, lastName } = determineUserName({ chat, userId });
+  const { firstName, lastName, profilePhoto } = determineUserName({ chat, userId });
   const { sendPushNotification, notificationSoundRef } = usePushNotifications(
     firstName,
     lastName,
-    room?.name
+    room?.name,
   );
   const messages = useChatMessages(
     chat?.id,
     room?.id,
     userId,
-    sendPushNotification
+    sendPushNotification,
   );
-  const { typingUsers } = useTypingStatus(chat?.id, userId, messageInputRef);
+  // const { typingUsers } = useTypingStatus(chat?.id, userId, messageInputRef);
 
   useUserStatus(userId);
-
-  const otherUserId =
-    chat?.participant_1_id === userId
-      ? chat?.participant_2_id
-      : chat?.participant_1_id;
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -60,34 +45,34 @@ const ActiveChat = ({
 
   const handleSendMessage = async (
     event: React.FormEvent,
-    imageUrl?: string
+    imageUrl?: string,
   ) => {
     event.preventDefault();
 
     if (imageUrl) {
-      await supabase.from("messages").insert([
+      await supabase.from('messages').insert([
         {
           chat_id: chat?.id,
           room_id: room?.id,
           sender_id: userId,
-          content: "",
-          image_url: imageUrl || "",
+          content: '',
+          image_url: imageUrl || '',
         },
       ]);
     }
 
     if (!message || !message.trim()) {
-      setMessage("");
+      setMessage('');
       return;
     }
 
-    const { error: sendMessageError } = await supabase.from("messages").insert([
+    const { error: sendMessageError } = await supabase.from('messages').insert([
       {
         chat_id: chat?.id,
         room_id: room?.id,
         sender_id: userId,
         content: message,
-        image_url: imageUrl || "",
+        image_url: imageUrl || '',
       },
     ]);
 
@@ -95,120 +80,80 @@ const ActiveChat = ({
       console.error(sendMessageError);
     }
 
-    setMessage("");
+    setMessage('');
     messageInputRef.current?.focus();
   };
 
-  // Scroll to the bottom of the chat on new messages
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  const filteredRoomParticipants = room?.room_participants.filter(
-    (roomParticipant) => {
-      const isCurrentUser = roomParticipant.user_id === userId;
-
-      return !isCurrentUser;
-    }
-  );
-
-  const participantsNames = filteredRoomParticipants?.map(
-    (roomParticipant, index) => {
+  const participantsNames = room?.room_participants
+    ?.map((roomParticipant, index) => {
       if (room) {
-        const isLastParticipant = index === filteredRoomParticipants.length - 1;
+        const isLastParticipant = index === room?.room_participants.length - 1;
+        const firstName = roomParticipant.users.first_name;
+        const lastName = roomParticipant.users.last_name;
 
-        // If the chat is a group chat, return the first and last name of the participants
-        return `${roomParticipant.users.first_name} ${
-          roomParticipant.users.last_name
-        }${isLastParticipant ? "" : ", "}`;
+        return isLastParticipant
+          ? `${firstName} ${lastName}`
+          : `${firstName} ${lastName}`;
       }
-    }
-  );
+    })
+    .filter(Boolean)
+    .join(', ');
+
+  const participantsWithPhotos = room?.room_participants?.map((participant) => {
+    const userPhoto = participant.users.profile_photo;
+
+    const userInitials = getUserLettersFromName({
+      firstName: participant.users.first_name,
+      lastName: participant.users.last_name,
+    }).fallbackName;
+
+    return {
+      userId: participant.user_id,
+      userPhoto,
+      userInitials,
+      firstName: participant.users.first_name,
+      lastName: participant.users.last_name,
+    };
+  });
 
   return (
-    <div className="p-2 bg-slate-600 w-full flex flex-col gap-1 h-screen relative">
-      <Button
-        className="absolute left-[10px] top-[15px] md:hidden"
-        icon={<MdKeyboardArrowRight className="w-8 h-8" />}
-        onClick={onSidebarToggle}
+    <div className="bg-white w-full flex flex-col h-screen relative gap-4 px-2">
+      <ActiveChatHeader
+        firstName={firstName}
+        lastName={lastName}
+        participantsNames={participantsNames}
+        groupName={room?.name}
+        userPhoto={profilePhoto}
       />
-      <div className="text-lg bg-slate-500 p-2 rounded-sm text-center md:text-left">
-        <span className="relative">
-          Chat with {participantsNames || `${firstName} ${lastName}`}
-          {chat ? <OtherUserStatus otherUserId={otherUserId} /> : null}
-        </span>
-      </div>
-      <div className="bg-slate-500 rounded-sm h-full flex flex-col gap-4 overflow-y-auto pt-8 px-3 pb-4">
-        {messages.length > 0 ? (
-          messages.map((message) => {
-            const isOtherUser = message.sender_id !== userId;
-            const senderName =
-              message.sender_id === userId ? "You" : `${firstName} ${lastName}`;
-
-            let nameOfUser = "";
-
-            if (room) {
-              nameOfUser =
-                message.sender_id === userId
-                  ? "You"
-                  : getCurrentSenderName(
-                      message.sender_id,
-                      filteredRoomParticipants
-                    );
-            }
-
-            if (chat) {
-              nameOfUser = senderName;
-            }
-            return (
-              <ChatItem
-                key={message.id}
-                content={message.content}
-                senderName={nameOfUser}
-                isOtherUser={isOtherUser}
-                imageUrl={message.image_url}
-                createdAt={message.created_at}
-              />
-            );
-          })
-        ) : (
-          <div className="p-2 rounded-sm  my-1">No messages yet</div>
-        )}
-        <div className="relative w-full h-[10px] mt-auto">
-          {typingUsers.length > 0 ? (
-            <span className="absolute text-xs text-center w-full">
-              {firstName} is typing
-            </span>
-          ) : null}
-        </div>
-        <div ref={messagesEndRef} />
-      </div>
-      <div className="flex w-full justify-center items-center">
-        <ImageUpload
-          onUpload={(event: any, url: string) => handleSendMessage(event, url)}
-        />
-        <form
-          className="bg-slate-500 rounded-sm flex gap-1 w-full"
-          onSubmit={(e) => handleSendMessage(e)}
-        >
-          <Input
-            ref={messageInputRef}
-            id="messsage"
-            type="text"
-            className="w-full"
-            placeholder="Type a message..."
-            value={message}
-            onChange={handleOnChange}
-          />
-          <Button
-            type="submit"
-            className="p-3 rounded-sm ml-1"
-            icon={<IoSend />}
-          />
-        </form>
-      </div>
+      <ActiveChatContent
+        messages={messages}
+        group={room}
+        chat={chat}
+        userId={userId}
+        firstName={firstName}
+        lastName={lastName}
+        filteredGroupParticipants={participantsWithPhotos}
+        messagesEndRef={messagesEndRef}
+      />
+      {/* <div className="relative w-full h-[10px] mt-auto">
+        {typingUsers.length > 0 ? (
+          <span className="absolute text-xs text-center w-full text-black">
+            {firstName} is typing
+          </span>
+        ) : null}
+      </div> */}
+      <ActiveChatInput
+        handleSendMessage={handleSendMessage}
+        handleInputChange={handleOnChange}
+        message={message}
+        inputRef={messageInputRef}
+      />
       <audio ref={notificationSoundRef} src="/sounds/notification.mp3" />
     </div>
   );

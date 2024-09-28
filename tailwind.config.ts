@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config: Config = {
   content: [
@@ -27,6 +28,9 @@ const config: Config = {
       },
       width: {
         "max-content": "max-content",
+      },
+      fontFamily: {
+        fredoka: ["Fredoka", ...defaultTheme.fontFamily.sans],
       },
     },
   },

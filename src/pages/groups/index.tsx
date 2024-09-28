@@ -1,20 +1,21 @@
-import { createClient } from "src/utils/supabase/component";
-import { createClient as createServerClient } from "src/utils/supabase/server-props";
-import { useState, useEffect } from "react";
-import { Room } from "src/types/Room.types";
-import ChatSidebar from "src/components/ChatSidebar";
-import { GetServerSidePropsContext } from "next";
-import PageMeta from "src/components/PageMeta";
+import { createClient } from 'src/utils/supabase/component';
+import { createClient as createServerClient } from 'src/utils/supabase/server-props';
+import { useState, useEffect } from 'react';
+import { Group } from 'src/types/Group.types';
+import ChatSidebar from 'src/components/ChatSidebar';
+import { GetServerSidePropsContext } from 'next';
+import PageMeta from 'src/components/PageMeta';
+import Card from 'src/components/Card';
 
 export default function Groups({
-  groups,
+  groupData,
   currentUserId,
 }: {
-  groups: Room[];
+  groupData: Group[];
   currentUserId: string;
 }) {
   const supabase = createClient();
-  const [rooms, setRooms] = useState<Room[]>(groups);
+  const [rooms, setRooms] = useState<Group[]>(groupData);
 
   useEffect(() => {
     fetchRooms();
@@ -22,28 +23,30 @@ export default function Groups({
   }, []);
 
   const fetchRooms = async () => {
-    const { data, error } = await supabase.from("rooms").select("*");
+    const { data, error } = await supabase.from('rooms').select('*');
 
-    if (error) console.error("Error fetching rooms:", error.message);
+    if (error) console.error('Error fetching rooms:', error.message);
     else setRooms(data);
   };
 
   return (
     <>
       <PageMeta title="Riko ConnectsZ | Groups" />
-      <div>
-        <ChatSidebar
-          groups={rooms}
-          currentUserId={currentUserId}
-          isOpen={true}
-        />
+      <div className="flex">
+        <ChatSidebar groups={rooms} currentUserId={currentUserId} />
+        <div className="bg-white p-2 w-full flex justify-center items-center h-screen">
+          <Card className="w-full h-full flex justify-center items-center">
+            <h2 className="text-gray-500">
+              Select a person from the sidebar to start messaging
+            </h2>
+          </Card>
+        </div>
       </div>
     </>
   );
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  // @ts-expect-error Expect
   const supabase = createServerClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const currentUserId = userData?.user?.id;
@@ -51,25 +54,25 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!userData.user) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
     };
   }
 
-  const { data: userRooms, error: userRoomsError } = await supabase
-    .from("room_participants")
-    .select("room_id")
-    .eq("user_id", currentUserId);
+  const { data: userGroups, error: userGroupsError } = await supabase
+    .from('room_participants')
+    .select('room_id')
+    .eq('user_id', currentUserId);
 
-  if (userRoomsError) {
-    console.error("Error fetching user rooms:", userRoomsError.message);
+  if (userGroupsError) {
+    console.error('Error fetching user rooms:', userGroupsError.message);
     return { props: { groups: [], currentUserId } };
   }
 
-  const roomIds = userRooms.map((rp) => rp.room_id);
+  const groupIds = userGroups.map((rp) => rp.room_id);
 
-  if (roomIds.length === 0) {
+  if (groupIds.length === 0) {
     // User is not part of any rooms
     return {
       props: {
@@ -79,8 +82,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
   }
 
-  const { data: roomsData, error: roomsError } = await supabase
-    .from("rooms")
+  const { data: groupData, error: groupsError } = await supabase
+    .from('rooms')
     .select(
       `
       id,
@@ -89,21 +92,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         user_id,
         users (
           first_name,
-          last_name
+          last_name,
+          profile_photo
         )
       )
-    `
+    `,
     )
-    .in("id", roomIds);
+    .in('id', groupIds);
 
-  if (roomsError) {
-    console.error("Error fetching rooms:", roomsError.message);
+  if (groupsError) {
+    console.error('Error fetching rooms:', groupsError.message);
     return { props: { groups: [], currentUserId } };
   }
 
   return {
     props: {
-      groups: roomsData || [],
+      groupData: groupData || [],
       currentUserId,
     },
   };

@@ -57,9 +57,9 @@ const OtherUserStatus = ({ otherUserId }: { otherUserId?: string }) => {
     <div className="text-xs">
       <span>
         {otherUserStatus.is_online ? (
-          <span className="text-accent-secondary font-bold">Online</span>
+          <span className="text-accent-secondary">Online</span>
         ) : (
-          <span className="text-gray-300 font-bold">
+          <span className="text-gray-500">
             Last seen: {timeSince(otherUserStatus.last_active)}
           </span>
         )}

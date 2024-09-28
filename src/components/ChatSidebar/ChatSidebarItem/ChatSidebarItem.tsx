@@ -1,6 +1,7 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
+import Link from 'next/link';
+import React from 'react';
+import UserPhotoOrAbbreviation from 'src/components/UserPhotoOrAbbreviation/UserPhotoOrAbbreviation';
+import { getUserLettersFromName } from 'src/utils/getUserLettersFromName';
 
 interface ChatSidebarItemProps {
   firstName?: string;
@@ -8,34 +9,32 @@ interface ChatSidebarItemProps {
   groupName?: string;
   chatId?: string;
   groupId?: string;
+  userPhoto?: string;
 }
 
 const ChatSidebarItem = ({
-  firstName = "",
-  lastName = "",
-  groupName = "",
+  firstName = '',
+  lastName = '',
+  groupName = '',
   chatId,
   groupId,
+  userPhoto = '',
 }: ChatSidebarItemProps) => {
-  const router = useRouter();
-
   const joinedName = `${firstName} ${lastName}`;
-  const isChatActive = router?.query?.id?.toString() === chatId;
-  const isGroupActive = router?.query?.id?.toString() === groupId;
-  const isActive = isChatActive || isGroupActive;
+  const { fallbackName } = getUserLettersFromName({ firstName, lastName });
 
   const linkHref = chatId ? `/chats/${chatId}` : `/groups/${groupId}`;
 
   return (
-    <Link href={linkHref}>
-      <div
-        className={`${
-          isActive
-            ? "bg-accent-secondary text-text-primary"
-            : "bg-dark-primary hover:bg-accent-secondary hover:text-text-primary"
-        }  hover:shadow-md shadow-sm transition-colors duraion-300 ease-in-out w-full text-center p-4 rounded-sm font-bold`}
-      >
-        {!joinedName.trim() ? groupName : joinedName}
+    <Link href={linkHref} className="px-2">
+      <div className="bg-white text-gray-500 p-2 hover:bg-gray-300 hover:text-gray-700 transition-colors duration-150 rounded-sm">
+        <div className="flex items-center gap-x-3">
+          <UserPhotoOrAbbreviation
+            userPhoto={userPhoto}
+            fallbackName={fallbackName}
+          />
+          {!joinedName.trim() ? groupName : joinedName}
+        </div>
       </div>
     </Link>
   );

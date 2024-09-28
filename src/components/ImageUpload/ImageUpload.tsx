@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { createClient } from "src/utils/supabase/component";
-import { IoAddCircle } from "react-icons/io5";
-import { FaCamera } from "react-icons/fa";
+import { RiGalleryLine } from "react-icons/ri";
+import { IoCameraOutline } from "react-icons/io5";
 import Button from "../Button";
 
 const ImageUpload = ({ onUpload }: { onUpload: any }) => {
@@ -29,7 +29,7 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         console.error("Upload Error while trying to upload: ", uploadError);
       }
 
-      const { data: signedUrlData } = await supabase.storage
+      const { data: signedUrlData } = supabase.storage
         .from("chat_images")
         .getPublicUrl(filePath);
 
@@ -54,12 +54,12 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
   };
 
   return (
-    <div className="flex p-3">
+    <div className="flex p-1">
       <input
         type="file"
         ref={fileInputRef}
         style={{ display: "none" }}
-        accept="image/*"
+        accept="image/*,video/*"
         onChange={uploadImage}
         disabled={uploading}
       />
@@ -67,22 +67,23 @@ const ImageUpload = ({ onUpload }: { onUpload: any }) => {
         type="file"
         ref={cameraInputRef}
         style={{ display: "none" }}
-        accept="image/*"
+        accept="image/*,video/*"
         capture="environment"
         onChange={uploadImage}
         disabled={uploading}
       />
-      <div className="flex gap-4">
+      <div className="flex gap-4 border-r border-cyan-500 pr-2">
         <Button
           onClick={handleButtonClick}
           disabled={uploading}
-          icon={<IoAddCircle className="w-10 h-10" />}
+          className="text-black"
+          icon={<RiGalleryLine className="w-6 h-6" />}
         />
         <Button
           onClick={handleCameraClick}
           disabled={uploading}
-          className="mr-4"
-          icon={<FaCamera className="w-8 h-8" />}
+          className="text-black"
+          icon={<IoCameraOutline className="w-6 h-6" />}
         />
       </div>
     </div>
