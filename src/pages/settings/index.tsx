@@ -13,17 +13,11 @@ import PageMeta from 'src/components/PageMeta';
 import ChatSidebar from 'src/components/ChatSidebar';
 import { Chat } from 'src/types/Chat.types';
 import { Group } from 'src/types/Group.types';
-import { set } from 'lodash';
-
-type UserStateType = Pick<
-  User,
-  'email' | 'profile_photo' | 'first_name' | 'last_name'
->;
 
 const SettingsPage = ({
   userData,
   chats,
-  groups,
+  // groups,
 }: {
   userData: User;
   chats: Chat[];
@@ -35,7 +29,6 @@ const SettingsPage = ({
   const [userEmail, setUserEmail] = useState(email);
   const [userFirstName, setUserFirstName] = useState(first_name);
   const [userLastName, setUserLastName] = useState(last_name);
-  const [userPhoto, setUserPhoto] = useState(profile_photo);
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
@@ -65,7 +58,7 @@ const SettingsPage = ({
     try {
       setIsUpdating(true);
 
-      let uploadedProfilePhotoUrl = userPhoto;
+      let uploadedProfilePhotoUrl = profile_photo;
 
       if (selectedImageFile) {
         const fileExt = selectedImageFile.name.split('.').pop();
@@ -143,9 +136,9 @@ const SettingsPage = ({
                         priority
                       />
                     )}
-                    {userPhoto && !imagePreviewUrl ? (
+                    {profile_photo && !imagePreviewUrl ? (
                       <Image
-                        src={userPhoto}
+                        src={profile_photo}
                         fill
                         className="object-cover"
                         alt={`${userFirstName} ${userLastName} profile photo`}
@@ -232,8 +225,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     participant_1_id,
     participant_2_id,
     created_at,
-    participant_1:participant_1_id(first_name, last_name),
-    participant_2:participant_2_id(first_name, last_name)
+    participant_1:participant_1_id(first_name, last_name, profile_photo),
+    participant_2:participant_2_id(first_name, last_name, profile_photo)
   `,
     )
     .or(
