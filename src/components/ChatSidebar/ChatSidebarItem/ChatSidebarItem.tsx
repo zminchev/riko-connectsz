@@ -1,6 +1,7 @@
-import Link from "next/link";
-// import { useRouter } from "next/router";
-import React from "react";
+import Link from 'next/link';
+import React from 'react';
+import UserPhotoOrAbbreviation from 'src/components/UserPhotoOrAbbreviation/UserPhotoOrAbbreviation';
+import { getUserLettersFromName } from 'src/utils/getUserLettersFromName';
 
 interface ChatSidebarItemProps {
   firstName?: string;
@@ -12,22 +13,15 @@ interface ChatSidebarItemProps {
 }
 
 const ChatSidebarItem = ({
-  firstName = "",
-  lastName = "",
-  groupName = "",
+  firstName = '',
+  lastName = '',
+  groupName = '',
   chatId,
   groupId,
-  userPhoto = "",
+  userPhoto = '',
 }: ChatSidebarItemProps) => {
-  // const router = useRouter();
-
   const joinedName = `${firstName} ${lastName}`;
-  const fallbackName = `${firstName.slice(0, 1).toUpperCase()}${lastName
-    .slice(0, 1)
-    .toUpperCase()}`;
-  // const isChatActive = router?.query?.id?.toString() === chatId;
-  // const isGroupActive = router?.query?.id?.toString() === groupId;
-  // const isActive = isChatActive || isGroupActive;
+  const { fallbackName } = getUserLettersFromName({ firstName, lastName });
 
   const linkHref = chatId ? `/chats/${chatId}` : `/groups/${groupId}`;
 
@@ -35,19 +29,10 @@ const ChatSidebarItem = ({
     <Link href={linkHref} className="px-2">
       <div className="bg-white text-gray-500 p-2 hover:bg-gray-300 hover:text-gray-700 transition-colors duration-150 rounded-sm">
         <div className="flex items-center gap-x-3">
-          <div className="w-12 h-12 rounded-full overflow-hidden border border-cyan-500">
-            {userPhoto ? (
-              <img
-                className="w-full h-full object-cover"
-                src={userPhoto}
-                alt="User Photo"
-              />
-            ) : (
-              <div className="w-full h-full flex justify-center items-center">
-                {fallbackName}
-              </div>
-            )}
-          </div>
+          <UserPhotoOrAbbreviation
+            userPhoto={userPhoto}
+            fallbackName={fallbackName}
+          />
           {!joinedName.trim() ? groupName : joinedName}
         </div>
       </div>

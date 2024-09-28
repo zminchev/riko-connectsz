@@ -41,12 +41,12 @@ const SidebarContent = ({
         <Card className="p-3 flex justify-between items-center">
           <Button
             icon={<IoMdExit className="w-6 h-6" />}
-            className="text-black hover:text-error-primary transition-colors duration-150 p-2"
+            className="text-black hover:text-error-primary p-2 transition-colors duration-150"
             onClick={onLogout}
           />
           <Button
             icon={<IoMdSettings className="w-6 h-6" />}
-            className="text-black p-2"
+            className="text-black p-2 hover:text-cyan-500 transition-colors duration-150"
           />
         </Card>
       </div>

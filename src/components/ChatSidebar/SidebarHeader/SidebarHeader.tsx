@@ -1,44 +1,47 @@
-import { useRouter } from "next/router";
-import React from "react";
-import Button from "src/components/Button";
-import Card from "src/components/Card";
+import { useRouter } from 'next/router';
+import React from 'react';
+import Button from 'src/components/Button';
+import Card from 'src/components/Card';
 
 const SidebarHeaderOptions = [
   {
     id: 1,
-    text: "Chats",
-    href: "/chats",
+    text: 'Chats',
+    href: '/chats',
   },
   {
     id: 2,
-    text: "Groups",
-    href: "/groups",
+    text: 'Groups',
+    href: '/groups',
   },
   {
     id: 3,
-    text: "Settings",
-    href: "/settings",
+    text: 'Settings',
+    href: '/settings',
   },
 ];
 
-const SidebarHeader = ({ isOpen }: { isOpen: boolean }) => {
+const SidebarHeader = ({
+  isOpen,
+  isInSettings,
+}: {
+  isOpen?: boolean;
+  isInSettings?: boolean;
+}) => {
   const router = useRouter();
-  console.log(router);
 
   const pathName = router.pathname;
   const isActive = (href: string) => {
-    const splitPath = pathName.split("/");
+    const splitPath = pathName.split('/');
 
-    if (splitPath[1] === href.split("/")[1]) return true;
+    if (splitPath[1] === href.split('/')[1]) return true;
 
     return false;
   };
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 bg-white h-20 p-2 transform transition-transform duration-300 ease-in-out flex md:translate-x-0 md:static w-96 z-40 ${
-        isOpen ? "translate-x-0" : "-translate-x-full pr-1"
-      } `}
+      className={`fixed inset-y-0 left-0 bg-white h-20 transform transition-transform duration-300 ease-in-out flex md:translate-x-0 md:static w-96 z-40 ${isInSettings ? 'py-2' : 'p-2'}`}
     >
       <Card className="flex py-4 justify-center items-center w-full">
         {SidebarHeaderOptions.map((option) => {
@@ -48,8 +51,8 @@ const SidebarHeader = ({ isOpen }: { isOpen: boolean }) => {
               text={option.text}
               className={`py-2 px-8 text-sm border-t border-b last:border-r first:border-l border-cyan-600 first:rounded-tl first:rounded-bl last:rounded-tr last:rounded-br ${
                 isActive(option.href)
-                  ? "text-white bg-cyan-600"
-                  : "bg-white text-cyan-600"
+                  ? 'text-white bg-cyan-600'
+                  : 'bg-white text-cyan-600'
               }`}
               onClick={() => router.push(option.href)}
             />

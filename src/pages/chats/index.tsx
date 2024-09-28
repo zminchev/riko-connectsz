@@ -1,5 +1,7 @@
 import { GetServerSidePropsContext } from "next";
+import Card from "src/components/Card";
 import ChatSidebar from "src/components/ChatSidebar";
+import PageMeta from "src/components/PageMeta";
 import { Chat } from "src/types/Chat.types";
 import { createClient } from "src/utils/supabase/server-props";
 
@@ -11,19 +13,25 @@ const ChatsIndex = ({
   currentUserId: string;
 }) => {
   return (
-    <div className="flex bg-gray-500">
-      <ChatSidebar chats={chats} currentUserId={currentUserId} />
-      <div className="w-full flex justify-center items-center">
-        <h2>Select a person from the sidebar to start messaging</h2>
+    <>
+      <PageMeta title="Riko ConnectsZ | Chats" />
+      <div className="flex">
+        <ChatSidebar chats={chats} currentUserId={currentUserId} />
+        <div className="bg-white p-2 w-full flex justify-center items-center h-screen">
+          <Card className="w-full h-full flex justify-center items-center">
+            <h2 className="text-gray-500">
+              Select a person from the sidebar to start messaging
+            </h2>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default ChatsIndex;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  // @ts-expect-error Expect
   const supabase = createClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const currentUserId = userData?.user?.id;

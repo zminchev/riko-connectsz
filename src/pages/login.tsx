@@ -122,7 +122,6 @@ export default function LoginPage() {
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
-  //@ts-expect-error - req and res are not defined in the context
   const supabase = serverClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const { data: chat, error } = await supabase.from("chats").select("*");

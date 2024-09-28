@@ -1,11 +1,11 @@
-import { GetServerSidePropsContext, PreviewData } from "next";
-import { ParsedUrlQuery } from "querystring";
-import React, { useState } from "react";
-import ActiveChat from "src/components/ActiveChat";
-import ChatSidebar from "src/components/ChatSidebar";
-import PageMeta from "src/components/PageMeta";
-import { Chat } from "src/types/Chat.types";
-import { createClient } from "src/utils/supabase/server-props";
+import { GetServerSidePropsContext, PreviewData } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import React, { useState } from 'react';
+import ActiveChat from 'src/components/ActiveChat';
+import ChatSidebar from 'src/components/ChatSidebar';
+import PageMeta from 'src/components/PageMeta';
+import { Chat } from 'src/types/Chat.types';
+import { createClient } from 'src/utils/supabase/server-props';
 
 const ChatsPage = ({
   chatsData,
@@ -32,18 +32,9 @@ const ChatsPage = ({
     <>
       <PageMeta title={`Chats | ${userNames}`} />
       <div className="flex">
-        <ChatSidebar
-          chats={chatsData}
-          currentUserId={currentUserId}
-          isOpen={isOpen}
-          onSidebarToggle={onSidebarToggle}
-        />
+        <ChatSidebar chats={chatsData} currentUserId={currentUserId} />
         {activeChat ? (
-          <ActiveChat
-            chat={activeChat}
-            userId={currentUserId}
-            onSidebarToggle={onSidebarToggle}
-          />
+          <ActiveChat chat={activeChat} userId={currentUserId} />
         ) : (
           <div>Choose a chat to start messaging</div>
         )}
@@ -55,9 +46,8 @@ const ChatsPage = ({
 export default ChatsPage;
 
 export const getServerSideProps = async (
-  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
 ) => {
-  //@ts-expect-error - Supabase client is not initialized
   const supabase = createClient({ req: ctx.req, res: ctx.res });
   const { data: userData } = await supabase.auth.getUser();
   const currentUserId = userData?.user?.id;
@@ -72,19 +62,19 @@ export const getServerSideProps = async (
   }
 
   const { data: chatsData, error: chatError } = await supabase
-    .from("chats")
+    .from('chats')
     .select(
       `
     id,
     participant_1_id,
     participant_2_id,
     created_at,
-    participant_1:participant_1_id(first_name, last_name),
-    participant_2:participant_2_id(first_name, last_name)
-  `
+    participant_1:participant_1_id(first_name, last_name, profile_photo),
+    participant_2:participant_2_id(first_name, last_name, profile_photo)
+  `,
     )
     .or(
-      `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`
+      `participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`,
     );
 
   const chatSlug = ctx.params?.id;
@@ -100,6 +90,8 @@ export const getServerSideProps = async (
   if (chatError) {
     console.error(chatError);
   }
+
+  console.log(activeChat);
 
   return {
     props: {

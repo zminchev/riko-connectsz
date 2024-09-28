@@ -4,18 +4,22 @@ import Card from "src/components/Card";
 const ActiveChatHeader = ({
   firstName = "",
   lastName = "",
+  groupName = "",
+  participantsNames = "",
   userPhoto = "",
 }: {
   firstName?: string;
   lastName?: string;
+  groupName?: string;
+  participantsNames?: string;
   userPhoto?: string;
 }) => {
   const fallbackName = `${firstName.slice(0, 1).toUpperCase()}${lastName
     .slice(0, 1)
     .toUpperCase()}`;
   return (
-    <div className="bg-white text-gray-500 px-4 py-2">
-      <Card className="py-[0.70rem] flex items-center pl-10">
+    <div className="bg-white text-gray-500 pt-2">
+      <Card className="py-[0.70rem] flex items-center pl-4">
         <div className="w-10 h-10 rounded-full overflow-hidden border border-cyan-500">
           {userPhoto ? (
             <img
@@ -30,7 +34,13 @@ const ActiveChatHeader = ({
           )}
         </div>
         <div className="pl-4">
-          {firstName} {lastName}
+          {participantsNames && groupName ? (
+            <>
+              {participantsNames} | {groupName}
+            </>
+          ) : (
+            <>{`${firstName} ${lastName}`}</>
+          )}
         </div>
       </Card>
     </div>

@@ -1,7 +1,13 @@
-import { type GetServerSidePropsContext } from "next";
 import { createServerClient, serializeCookieHeader } from "@supabase/ssr";
+import { NextApiRequestCookies } from "next/dist/server/api-utils";
+import { IncomingMessage, ServerResponse } from "http";
 
-export function createClient({ req, res }: GetServerSidePropsContext) {
+type RequestResponseContext = {
+  req: IncomingMessage & { cookies: Partial<NextApiRequestCookies> };
+  res: ServerResponse;
+};
+
+export function createClient({ req, res }: RequestResponseContext) {
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
     process.env.NEXT_PUBLIC_SUPABASE_KEY || "",

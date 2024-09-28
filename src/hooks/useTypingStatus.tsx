@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { createClient } from "src/utils/supabase/component";
+import { useEffect, useState } from 'react';
+import { createClient } from 'src/utils/supabase/component';
 
 const useTypingStatus = (
   chatId: string | undefined,
   userId: string,
-  inputRef: React.RefObject<HTMLInputElement>
+  inputRef: React.RefObject<HTMLInputElement>,
 ) => {
   const supabase = createClient();
   const [typingUsers, setTypingUsers] = useState<any[]>([]);
@@ -43,22 +43,24 @@ const useTypingStatus = (
     };
 
     // Add event listener to the input element
-    inputElement.addEventListener("input", handleTyping);
+    inputElement.addEventListener('input', handleTyping);
 
     // Subscribe to the channel
     channel.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
+      if (status === 'SUBSCRIBED') {
         // Optionally, track initial presence data
         updatePresence(false);
       }
     });
 
     // Listen for presence updates
-    channel.on("presence", { event: "sync" }, () => {
+    channel.on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState();
       const usersTyping = [];
 
       for (const [id, presences] of Object.entries(state)) {
+        console.log(presences);
+
         if (id !== userId.toString()) {
           // Get the latest presence data
           const latestPresence = presences[presences.length - 1];
@@ -75,7 +77,7 @@ const useTypingStatus = (
     return () => {
       // Cleanup on unmount
       if (typingTimeout) clearTimeout(typingTimeout);
-      inputElement.removeEventListener("input", handleTyping);
+      inputElement.removeEventListener('input', handleTyping);
       channel.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

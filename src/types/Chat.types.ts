@@ -5,10 +5,12 @@ export type Chat = {
   participant_1?: {
     first_name: string;
     last_name: string;
+    profile_photo: string;
   };
   participant_2?: {
     first_name: string;
     last_name: string;
+    profile_photo: string;
   };
   created_at: string;
 };

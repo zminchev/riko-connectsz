@@ -1,10 +1,10 @@
-import { GetServerSidePropsContext } from "next";
-import { Group } from "src/types/Group.types";
-import React, { useState } from "react";
-import ChatSidebar from "src/components/ChatSidebar";
-import { createClient } from "src/utils/supabase/server-props";
-import ActiveChat from "src/components/ActiveChat";
-import PageMeta from "src/components/PageMeta";
+import { GetServerSidePropsContext } from 'next';
+import { Group } from 'src/types/Group.types';
+import React, { useState } from 'react';
+import ChatSidebar from 'src/components/ChatSidebar';
+import { createClient } from 'src/utils/supabase/server-props';
+import ActiveChat from 'src/components/ActiveChat';
+import PageMeta from 'src/components/PageMeta';
 
 const GroupPage = ({
   groups,
@@ -32,11 +32,7 @@ const GroupPage = ({
           onSidebarToggle={onSidebarToggle}
         />
         {activeGroup ? (
-          <ActiveChat
-            room={activeGroup}
-            userId={currentUserId}
-            onSidebarToggle={onSidebarToggle}
-          />
+          <ActiveChat room={activeGroup} userId={currentUserId} />
         ) : (
           <div>Choose or create a group to start messaging</div>
         )}
@@ -48,7 +44,6 @@ const GroupPage = ({
 export default GroupPage;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  //@ts-expect-error - Supabase client is not initialized
   const supabase = createClient({ req: ctx.req, res: ctx.res });
 
   const { data: userData } = await supabase.auth.getUser();
@@ -56,12 +51,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const groupSlug = ctx.params?.id;
 
   const { data: userRooms, error: userRoomsError } = await supabase
-    .from("room_participants")
-    .select("room_id")
-    .eq("user_id", currentUserId);
+    .from('room_participants')
+    .select('room_id')
+    .eq('user_id', currentUserId);
 
   if (userRoomsError) {
-    console.error("Error fetching user rooms:", userRoomsError.message);
+    console.error('Error fetching user rooms:', userRoomsError.message);
     return { props: { groups: [], currentUserId } };
   }
 
@@ -78,7 +73,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 
   const { data: roomsData, error: roomsError } = await supabase
-    .from("rooms")
+    .from('rooms')
     .select(
       `
     id,
@@ -87,15 +82,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       user_id,
       users (
           first_name,
-          last_name
+          last_name,
+          profile_photo
           )
           )
-          `
+          `,
     )
-    .in("id", roomIds);
+    .in('id', roomIds);
 
   if (roomsError) {
-    console.error("Error fetching rooms:", roomsError.message);
+    console.error('Error fetching rooms:', roomsError.message);
     return { props: { groups: [], currentUserId } };
   }
 
