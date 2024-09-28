@@ -7,11 +7,11 @@ import { ModalProvider } from "src/context/ModalContext";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <SpeedInsights />
       <NotificationManager />
       <ModalProvider>
         <Component {...pageProps} />
       </ModalProvider>
+      <SpeedInsights />
     </>
   );
 }
