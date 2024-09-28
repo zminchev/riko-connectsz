@@ -37,11 +37,20 @@ const ActiveChatContent = ({
         {messages.length > 0 ? (
           messages.map((message) => {
             const isOtherUser = message.sender_id !== userId;
+
+            const sender =
+              message.sender_id === chat?.participant_1_id
+                ? chat?.participant_1
+                : chat?.participant_2;
+            const userPhoto = sender?.profile_photo;
+
             const senderName =
               message.sender_id === userId ? 'You' : `${firstName} ${lastName}`;
-            const userPhoto = filteredGroupParticipants?.find((participant) => {
-              return participant.userId === message.sender_id;
-            });
+            const userGroupPhoto = filteredGroupParticipants?.find(
+              (participant) => {
+                return participant.userId === message.sender_id;
+              },
+            );
 
             let nameOfUser = '';
 
@@ -67,7 +76,7 @@ const ActiveChatContent = ({
                 isOtherUser={isOtherUser}
                 imageUrl={message.image_url}
                 createdAt={message.created_at}
-                userPhoto={userPhoto?.userPhoto}
+                userPhoto={chat ? userPhoto : userGroupPhoto?.userPhoto}
               />
             );
           })

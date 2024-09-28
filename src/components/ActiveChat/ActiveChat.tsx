@@ -137,6 +137,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         userId={userId}
         firstName={firstName}
         lastName={lastName}
+        filteredGroupParticipants={participantsWithPhotos}
         messagesEndRef={messagesEndRef}
       />
       {/* <div className="relative w-full h-[10px] mt-auto">
