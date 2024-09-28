@@ -12,16 +12,13 @@ import Button from 'src/components/Button';
 import PageMeta from 'src/components/PageMeta';
 import ChatSidebar from 'src/components/ChatSidebar';
 import { Chat } from 'src/types/Chat.types';
-import { Group } from 'src/types/Group.types';
 
 const SettingsPage = ({
   userData,
   chats,
-  // groups,
 }: {
   userData: User;
   chats: Chat[];
-  groups: Group[];
 }) => {
   const supabase = createClient();
   const { id, email, profile_photo, first_name, last_name } = userData;
@@ -200,6 +197,8 @@ export default SettingsPage;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const supabase = createServerClient({ req: ctx.req, res: ctx.res });
   const { data } = await supabase.auth.getUser();
+  console.log(data);
+
   const currentUserId = data?.user?.id;
 
   if (!data) {
@@ -214,7 +213,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { data: userData, error } = await supabase
     .from('users')
     .select('*')
-    .eq('id', data.user?.id)
+    .eq('id', currentUserId)
     .single();
 
   const { data: chatsData } = await supabase
@@ -237,54 +236,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     console.error('Error fetching user data:', error.message);
   }
 
-  const { data: userGroups, error: userGroupsError } = await supabase
-    .from('room_participants')
-    .select('room_id')
-    .eq('user_id', currentUserId);
-
-  if (userGroupsError) {
-    console.error('Error fetching user rooms:', userGroupsError.message);
-    return { props: { groups: [], currentUserId } };
-  }
-
-  const groupIds = userGroups.map((rp) => rp.room_id);
-
-  if (groupIds.length === 0) {
-    // User is not part of any rooms
-    return {
-      props: {
-        groups: [],
-        currentUserId,
-      },
-    };
-  }
-
-  const { data: groupData, error: groupsError } = await supabase
-    .from('rooms')
-    .select(
-      `
-      id,
-      name,
-      room_participants (
-        user_id,
-        users (
-          first_name,
-          last_name
-        )
-      )
-    `,
-    )
-    .in('id', groupIds);
-
-  if (groupsError) {
-    console.error('Error fetching rooms:', groupsError.message);
-    return { props: { groups: [], currentUserId } };
-  }
-
   return {
     props: {
       chats: chatsData || [],
-      groups: groupData || [],
       userData: userData || {},
     },
   };
