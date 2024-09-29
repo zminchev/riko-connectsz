@@ -6,4 +6,5 @@ export type Message = {
   image_url?: string;
   created_at: string;
   updated_at: string;
+  audio_url?: string;
 };

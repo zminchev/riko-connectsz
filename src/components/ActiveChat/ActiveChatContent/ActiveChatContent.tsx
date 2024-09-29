@@ -77,6 +77,7 @@ const ActiveChatContent = ({
                 imageUrl={message.image_url}
                 createdAt={message.created_at}
                 userPhoto={chat ? userPhoto : userGroupPhoto?.userPhoto}
+                audioUrl={message.audio_url}
               />
             );
           })

@@ -23,7 +23,10 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
   const [message, setMessage] = useState('');
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { firstName, lastName, profilePhoto } = determineUserName({ chat, userId });
+  const { firstName, lastName, profilePhoto } = determineUserName({
+    chat,
+    userId,
+  });
   const { sendPushNotification, notificationSoundRef } = usePushNotifications(
     firstName,
     lastName,
@@ -39,7 +42,10 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
 
   useUserStatus(userId);
 
-  const otherUserId = chat?.participant_1_id === userId ? chat?.participant_2_id : chat?.participant_1_id;
+  const otherUserId =
+    chat?.participant_1_id === userId
+      ? chat?.participant_2_id
+      : chat?.participant_1_id;
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -156,6 +162,9 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         handleInputChange={handleOnChange}
         message={message}
         inputRef={messageInputRef}
+        userId={userId}
+        groupId={room?.id}
+        chatId={chat?.id}
       />
       <audio ref={notificationSoundRef} src="/sounds/notification.mp3" />
     </div>

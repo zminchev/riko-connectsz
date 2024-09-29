@@ -10,6 +10,9 @@ const ActiveChatInput = ({
   handleInputChange,
   message,
   inputRef,
+  userId,
+  groupId,
+  chatId,
 }: {
   handleSendMessage: (
     event: React.FormEvent,
@@ -18,12 +21,18 @@ const ActiveChatInput = ({
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   message: string;
   inputRef: React.RefObject<HTMLInputElement>;
+  userId: string;
+  groupId?: string;
+  chatId?: string;
 }) => {
   return (
     <div className="pb-2">
-      <Card className="px-3 py-4 pb-3 w-full flex">
+      <Card className="px-3 py-4 pb-3 w-full flex items-center gap-2">
         <ImageUpload
           onUpload={(event: any, url: string) => handleSendMessage(event, url)}
+          chatId={chatId}
+          groupId={groupId}
+          userId={userId}
         />
         <form
           className="rounded-sm flex gap-1 w-full"

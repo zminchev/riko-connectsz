@@ -8,7 +8,6 @@ import { ParsedUrlQuery } from 'querystring';
 import Input from 'src/components/Input/Input';
 import Button from 'src/components/Button';
 import PageMeta from 'src/components/PageMeta';
-import Card from 'src/components/Card';
 
 export default function LoginPage() {
   const supabase = createClient();

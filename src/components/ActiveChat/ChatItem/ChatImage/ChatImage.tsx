@@ -45,6 +45,7 @@ const ChatImage = ({
             src={imageSrc}
             alt="Modal Image"
             fill
+            sizes=""
             onLoad={handleImageLoad}
             onClick={() => openModal(modalId)}
             className="cursor-pointer object-contain"

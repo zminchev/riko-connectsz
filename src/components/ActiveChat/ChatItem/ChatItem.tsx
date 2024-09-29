@@ -9,6 +9,7 @@ interface ChatItemProps {
   isOtherUser: boolean;
   imageUrl?: string;
   userPhoto?: string;
+  audioUrl?: string;
   currentUserPhoto?: string;
   otherUserPhoto?: string;
   createdAt: string;
@@ -18,6 +19,7 @@ const ChatItem = ({
   content,
   senderName = '',
   userPhoto = '',
+  audioUrl = '',
   isOtherUser,
   imageUrl = '',
   createdAt,
@@ -47,6 +49,7 @@ const ChatItem = ({
       lastMessageTime={lastMessageTime}
       content={content}
       userPhoto={userPhoto}
+      audioUrl={audioUrl}
     />
   );
 };

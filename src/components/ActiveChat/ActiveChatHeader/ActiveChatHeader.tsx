@@ -30,6 +30,7 @@ const ActiveChatHeader = ({
               <Image
                 className="w-full h-full object-cover"
                 fill
+                sizes=''
                 src={userPhoto}
                 alt="User Photo"
               />
