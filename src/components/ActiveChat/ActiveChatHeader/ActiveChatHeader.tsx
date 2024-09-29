@@ -9,12 +9,14 @@ const ActiveChatHeader = ({
   groupName = '',
   participantsNames = '',
   userPhoto = '',
+  userId = '',
 }: {
   firstName?: string;
   lastName?: string;
   groupName?: string;
   participantsNames?: string;
   userPhoto?: string;
+  userId?: string;
 }) => {
   const fallbackName = `${firstName.slice(0, 1).toUpperCase()}${lastName
     .slice(0, 1)
@@ -45,7 +47,7 @@ const ActiveChatHeader = ({
             ) : (
               <>
                 {`${firstName} ${lastName}`}
-                <OtherUserStatus />
+                <OtherUserStatus otherUserId={userId}/>
               </>
             )}
           </div>

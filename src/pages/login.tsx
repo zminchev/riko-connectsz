@@ -8,6 +8,7 @@ import { ParsedUrlQuery } from 'querystring';
 import Input from 'src/components/Input/Input';
 import Button from 'src/components/Button';
 import PageMeta from 'src/components/PageMeta';
+import Card from 'src/components/Card';
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -65,12 +66,12 @@ export default function LoginPage() {
       <main className="h-screen w-full">
         <form className="w-full h-full p-6 md:p-0">
           <div className="flex flex-col items-center justify-center gap-2 w-full h-full">
-            <h1 className="text-4xl mb-4">Riko ConnectsZ</h1>
+            <h1 className="text-4xl mb-4 text-cyan-500">Riko ConnectsZ</h1>
             <Input
               id="email"
               type="email"
               placeholder="Email"
-              className="w-full md:w-1/2 lg:w-1/3"
+              className="w-full md:w-1/2 lg:w-1/3 border border-gray-500/25"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -78,7 +79,7 @@ export default function LoginPage() {
               id="first-namee"
               type="text"
               placeholder="First Name"
-              className="w-full md:w-1/2 lg:w-1/3"
+              className="w-full md:w-1/2 lg:w-1/3 border border-gray-500/25"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -86,7 +87,7 @@ export default function LoginPage() {
               id="last-name"
               type="text"
               placeholder="Last Name"
-              className="w-full md:w-1/2 lg:w-1/3"
+              className="w-full md:w-1/2 lg:w-1/3 border border-gray-500/25"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -94,20 +95,20 @@ export default function LoginPage() {
               id="password"
               type="password"
               placeholder="Password"
-              className="w-full md:w-1/2 lg:w-1/3"
+              className="w-full md:w-1/2 lg:w-1/3 border border-gray-500/25"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               type="button"
               text="Log in"
-              className="font-bold p-2 bg-button-primary hover:bg-button-secondary hover:text-text-primary w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
+              className="p-2 bg-cyan-500 hover:bg-cyan-600 w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
               onClick={logIn}
             />
             <Button
               type="button"
               text="Sign up"
-              className="font-bold p-2 bg-button-primary hover:bg-button-secondary hover:text-text-primary w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
+              className="p-2 bg-cyan-500 hover:bg-cyan-600 w-full md:w-1/2 lg:w-1/3 transition-colors duration-300 ease-in-out rounded-sm text-white"
               onClick={signUp}
             />
           </div>

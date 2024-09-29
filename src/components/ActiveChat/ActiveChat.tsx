@@ -39,6 +39,8 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
 
   useUserStatus(userId);
 
+  const otherUserId = chat?.participant_1_id === userId ? chat?.participant_2_id : chat?.participant_1_id;
+
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
   };
@@ -130,6 +132,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         participantsNames={participantsNames}
         groupName={room?.name}
         userPhoto={profilePhoto}
+        userId={otherUserId}
       />
       <ActiveChatContent
         messages={messages}
