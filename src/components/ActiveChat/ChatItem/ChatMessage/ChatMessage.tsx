@@ -1,21 +1,25 @@
 import React from 'react';
 import UserPhotoOrAbbreviation from 'src/components/UserPhotoOrAbbreviation/UserPhotoOrAbbreviation';
 import { getUserLettersFromName } from 'src/utils/getUserLettersFromName';
+
 const ChatMessage = ({
   isOtherUser,
   senderName,
   lastMessageTime,
   content,
   userPhoto = '',
+  audioUrl = '',
 }: {
   isOtherUser: boolean;
   senderName: string;
   lastMessageTime: string;
   content: string;
   userPhoto?: string;
+  audioUrl?: string;
 }) => {
   const firstName = senderName.split(' ')[0];
   const lastName = senderName.split(' ')[1];
+  const audioRef = React.useRef<HTMLAudioElement>(null);
 
   const { fallbackName } = getUserLettersFromName({ firstName, lastName });
 
@@ -50,9 +54,13 @@ const ChatMessage = ({
                 : 'bg-cyan-500 rounded-t-md rounded-br-md'
             }`}
           >
-            <span className="text-md break-words whitespace-normal text-center">
-              {content}
-            </span>
+            {audioUrl ? (
+              <audio ref={audioRef} src={audioUrl} controls />
+            ) : (
+              <span className="text-md break-words whitespace-normal text-center">
+                {content}
+              </span>
+            )}
           </div>
           <span
             className={`text-xs pt-1 ${

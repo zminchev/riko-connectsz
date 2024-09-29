@@ -128,6 +128,7 @@ const SettingsPage = ({
                       <Image
                         src={imagePreviewUrl}
                         fill
+                        sizes=''
                         className="object-cover"
                         alt="Profile Preview"
                         priority
@@ -137,6 +138,7 @@ const SettingsPage = ({
                       <Image
                         src={profile_photo}
                         fill
+                        sizes=''
                         className="object-cover"
                         alt={`${userFirstName} ${userLastName} profile photo`}
                       />
