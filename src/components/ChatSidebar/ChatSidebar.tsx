@@ -10,7 +10,6 @@ interface ChatSidebarProps {
   chats?: Chat[];
   groups?: Group[];
   currentUserId: string;
-  activeGroup?: Group;
   isOpen?: boolean;
   onSidebarToggle?: () => void;
 }
@@ -19,7 +18,6 @@ const ChatSidebar = ({
   chats = [],
   currentUserId,
   groups = [],
-  activeGroup,
 }: ChatSidebarProps) => {
   const supabase = createClient();
   const [allChats, setAllChats] = useState<Chat[]>(chats);

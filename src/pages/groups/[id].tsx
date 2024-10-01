@@ -28,7 +28,6 @@ const GroupPage = ({
         <ChatSidebar
           groups={groups}
           currentUserId={currentUserId}
-          activeGroup={activeGroup}
           isOpen={isOpen}
           onSidebarToggle={onSidebarToggle}
         />
