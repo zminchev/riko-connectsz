@@ -1,6 +1,4 @@
-import { createClient } from 'src/utils/supabase/component';
 import { createClient as createServerClient } from 'src/utils/supabase/server-props';
-import { useState, useEffect } from 'react';
 import { Group } from 'src/types/Group.types';
 import ChatSidebar from 'src/components/ChatSidebar';
 import { GetServerSidePropsContext } from 'next';
