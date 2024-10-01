@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Chat } from 'src/types/Chat.types';
 import { determineUserName } from 'src/utils/determineUserName';
 import { createClient } from 'src/utils/supabase/component';
@@ -20,23 +20,30 @@ interface ActiveChatProps {
 
 const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
   const supabase = createClient();
+
   const [message, setMessage] = useState('');
+
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const { firstName, lastName, profilePhoto } = determineUserName({
     chat,
     userId,
   });
+
   const { sendPushNotification, notificationSoundRef } = usePushNotifications(
     firstName,
     lastName,
     room?.name,
   );
-  const messages = useChatMessages(
+
+  const { messages, handleScroll, isLoading } = useChatMessages(
     chat?.id,
     room?.id,
     userId,
     sendPushNotification,
+    containerRef,
   );
   // const { typingUsers } = useTypingStatus(chat?.id, userId, messageInputRef);
 
@@ -90,13 +97,17 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
 
     setMessage('');
     messageInputRef.current?.focus();
-  };
 
-  useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
+  };
+
+  // useEffect(() => {
+  //   if (messagesEndRef.current && !isLoading) {
+  //     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // }, [messages]);
 
   const participantsNames = room?.room_participants
     ?.map((roomParticipant, index) => {
@@ -149,6 +160,9 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         lastName={lastName}
         filteredGroupParticipants={participantsWithPhotos}
         messagesEndRef={messagesEndRef}
+        containerRef={containerRef}
+        onScroll={handleScroll}
+        isLoading={isLoading}
       />
       {/* <div className="relative w-full h-[10px] mt-auto">
         {typingUsers.length > 0 ? (
