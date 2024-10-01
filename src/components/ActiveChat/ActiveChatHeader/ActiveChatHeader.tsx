@@ -9,6 +9,7 @@ const ActiveChatHeader = ({
   groupName = '',
   participantsNames = '',
   userPhoto = '',
+  groupPhoto = '',
   userId = '',
 }: {
   firstName?: string;
@@ -16,6 +17,7 @@ const ActiveChatHeader = ({
   groupName?: string;
   participantsNames?: string;
   userPhoto?: string;
+  groupPhoto?: string;
   userId?: string;
 }) => {
   const fallbackName = `${firstName.slice(0, 1).toUpperCase()}${lastName
@@ -26,12 +28,12 @@ const ActiveChatHeader = ({
       <Card className="py-[0.70rem] flex items-center pl-4">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full overflow-hidden border border-cyan-500 relative">
-            {userPhoto ? (
+            {userPhoto || groupPhoto ? (
               <Image
                 className="w-full h-full object-cover"
                 fill
-                sizes=''
-                src={userPhoto}
+                sizes=""
+                src={userPhoto || groupPhoto}
                 alt="User Photo"
               />
             ) : (
@@ -48,7 +50,7 @@ const ActiveChatHeader = ({
             ) : (
               <>
                 {`${firstName} ${lastName}`}
-                <OtherUserStatus otherUserId={userId}/>
+                <OtherUserStatus otherUserId={userId} />
               </>
             )}
           </div>

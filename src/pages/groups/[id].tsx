@@ -28,6 +28,7 @@ const GroupPage = ({
         <ChatSidebar
           groups={groups}
           currentUserId={currentUserId}
+          activeGroup={activeGroup}
           isOpen={isOpen}
           onSidebarToggle={onSidebarToggle}
         />
@@ -78,6 +79,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       `
     id,
     name,
+    room_photo,
     room_participants (
       user_id,
       users (

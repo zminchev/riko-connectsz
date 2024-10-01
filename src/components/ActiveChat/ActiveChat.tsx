@@ -149,6 +149,7 @@ const ActiveChat = ({ chat, room, userId }: ActiveChatProps) => {
         participantsNames={participantsNames}
         groupName={room?.name}
         userPhoto={profilePhoto}
+        groupPhoto={room?.room_photo}
         userId={otherUserId}
       />
       <ActiveChatContent

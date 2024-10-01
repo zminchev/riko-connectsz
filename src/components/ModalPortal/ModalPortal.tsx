@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { IoClose } from "react-icons/io5";
-import ReactDOM from "react-dom";
+import React, { useEffect, useState } from 'react';
+import { IoClose } from 'react-icons/io5';
+import ReactDOM from 'react-dom';
+import Card from '../Card';
 
 interface ModalProps {
   isOpen: boolean;
@@ -22,10 +23,10 @@ const Modal: React.FC<ModalProps> = ({
       setTimeout(() => {
         setIsVisible(true);
       }, 50);
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
       setIsVisible(false);
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
   }, [isOpen]);
 
@@ -35,28 +36,28 @@ const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center text-dark-primary p-12">
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 backdrop-blur blur-md ${
-          isVisible ? "opacity-100" : "opacity-0"
+          isVisible ? 'opacity-100' : 'opacity-0'
         }`}
         onClick={onClose}
       ></div>
 
-      <div
+      <Card
         className={`rounded-lg p-1 z-10 w-full transform transition-transform duration-300 ease-out  ${
-          !hasImage ? "max-w-lg bg-dark-primary text-white" : "h-full"
-        } ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+          !hasImage ? 'max-w-lg bg-white text-white' : 'h-full'
+        } ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
       >
         <button
           className={`absolute -top-10 text-white hover:bg-gray-200/10 rounded-full transition-colors duration-300 ${
-            !hasImage ? "p-1 -top-11 right-0" : "p-2 -right-10"
+            !hasImage ? 'p-1 -top-11 right-0' : 'p-2 -right-10'
           }`}
           onClick={onClose}
         >
           <IoClose className="w-8 h-8" />
         </button>
         {children}
-      </div>
+      </Card>
     </div>,
-    document.body
+    document.body,
   );
 };
 
