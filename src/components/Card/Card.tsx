@@ -1,15 +1,22 @@
-import React from "react";
+import React from 'react';
 
 const Card = ({
   children,
-  className = "",
+  className = '',
+  containerRef,
+  onScroll,
 }: {
   children: React.ReactNode;
   className?: string;
-  isRounded?: boolean;
+  containerRef?: React.RefObject<HTMLDivElement>;
+  onScroll?: () => void;
 }) => {
   return (
-    <div className={`shadow-md border border-gray-300/50 ${className}`}>
+    <div
+      className={`shadow-md border border-gray-300/50 ${className}`}
+      ref={containerRef}
+      onScroll={onScroll}
+    >
       {children}
     </div>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from 'src/components/Card';
 import { Chat } from 'src/types/Chat.types';
 import { Group } from 'src/types/Group.types';
@@ -15,6 +15,9 @@ const ActiveChatContent = ({
   chat,
   filteredGroupParticipants,
   messagesEndRef,
+  containerRef,
+  onScroll,
+  isLoading,
 }: {
   messages: Message[];
   userId: string;
@@ -30,10 +33,41 @@ const ActiveChatContent = ({
     userInitials: string;
   }[];
   messagesEndRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement>;
+  onScroll?: () => void;
+  isLoading?: boolean;
 }) => {
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [prevMessageCount, setPrevMessageCount] = useState(0);
+
+  useEffect(() => {
+    if (isInitialLoad && containerRef.current) {
+      containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
+      setIsInitialLoad(false);
+    }
+  }, [isInitialLoad, containerRef]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      if (prevMessageCount === 0) {
+        // If it's the first load or no messages were there before
+        containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
+      }
+    }
+    setPrevMessageCount(messages.length);
+  }, [messages, containerRef, prevMessageCount, chat]);
   return (
     <div className="w-full h-full bg-white text-gray-500">
-      <Card className="h-full p-4 overflow-auto max-h-[733px]">
+      <Card
+        className="h-full p-4 overflow-auto max-h-[733px]"
+        containerRef={containerRef}
+        onScroll={onScroll}
+      >
+        {isLoading && (
+          <div className="p-5 text-center w-full">
+            Loading previous messages...
+          </div>
+        )}
         {messages.length > 0 ? (
           messages.map((message) => {
             const isOtherUser = message.sender_id !== userId;

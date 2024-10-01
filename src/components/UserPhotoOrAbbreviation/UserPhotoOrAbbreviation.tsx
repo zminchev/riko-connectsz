@@ -3,10 +3,12 @@ import React from 'react';
 
 const UserPhotoOrAbbreviation = ({
   userPhoto,
+  groupPhoto = '',
   fallbackName,
   className = '',
 }: {
   userPhoto?: string;
+  groupPhoto?: string;
   fallbackName?: string;
   width?: string;
   height?: string;
@@ -16,12 +18,12 @@ const UserPhotoOrAbbreviation = ({
     <div
       className={`w-10 h-10 rounded-full overflow-hidden border border-cyan-500 relative ${className}`}
     >
-      {userPhoto ? (
+      {userPhoto || groupPhoto ? (
         <Image
           className="w-full h-full object-cover"
           fill
-          sizes=''
-          src={userPhoto}
+          sizes=""
+          src={userPhoto || groupPhoto}
           alt="User Photo"
         />
       ) : (

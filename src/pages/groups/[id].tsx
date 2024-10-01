@@ -78,6 +78,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       `
     id,
     name,
+    room_photo,
     room_participants (
       user_id,
       users (

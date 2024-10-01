@@ -1,6 +1,4 @@
-import { createClient } from 'src/utils/supabase/component';
 import { createClient as createServerClient } from 'src/utils/supabase/server-props';
-import { useState, useEffect } from 'react';
 import { Group } from 'src/types/Group.types';
 import ChatSidebar from 'src/components/ChatSidebar';
 import { GetServerSidePropsContext } from 'next';
@@ -14,26 +12,11 @@ export default function Groups({
   groupData: Group[];
   currentUserId: string;
 }) {
-  const supabase = createClient();
-  const [rooms, setRooms] = useState<Group[]>(groupData);
-
-  useEffect(() => {
-    fetchRooms();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchRooms = async () => {
-    const { data, error } = await supabase.from('rooms').select('*');
-
-    if (error) console.error('Error fetching rooms:', error.message);
-    else setRooms(data);
-  };
-
   return (
     <>
       <PageMeta title="Riko ConnectsZ | Groups" />
       <div className="flex">
-        <ChatSidebar groups={rooms} currentUserId={currentUserId} />
+        <ChatSidebar groups={groupData} currentUserId={currentUserId} />
         <div className="bg-white p-2 w-full flex justify-center items-center h-screen">
           <Card className="w-full h-full flex justify-center items-center">
             <h2 className="text-gray-500">
@@ -88,6 +71,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       `
       id,
       name,
+      room_photo,
       room_participants (
         user_id,
         users (

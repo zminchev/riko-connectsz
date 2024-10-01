@@ -7,6 +7,7 @@ interface ChatSidebarItemProps {
   firstName?: string;
   lastName?: string;
   groupName?: string;
+  groupPhoto?: string;
   chatId?: string;
   groupId?: string;
   userPhoto?: string;
@@ -16,6 +17,7 @@ const ChatSidebarItem = ({
   firstName = '',
   lastName = '',
   groupName = '',
+  groupPhoto = '',
   chatId,
   groupId,
   userPhoto = '',
@@ -31,6 +33,7 @@ const ChatSidebarItem = ({
         <div className="flex items-center gap-x-3">
           <UserPhotoOrAbbreviation
             userPhoto={userPhoto}
+            groupPhoto={groupPhoto}
             fallbackName={fallbackName}
           />
           {!joinedName.trim() ? groupName : joinedName}

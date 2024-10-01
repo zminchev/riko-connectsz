@@ -2,6 +2,7 @@ export interface Group {
   id: string;
   name: string;
   created_at: string;
+  room_photo: string;
   room_participants: {
     user_id: string;
     users: {
